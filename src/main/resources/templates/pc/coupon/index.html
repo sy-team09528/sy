@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="UTF-8">
+<title th:text="${title}"></title>
+
+<div th:include="/common/layui"></div>
+<div th:include="/common/jq"></div>
+
+<link rel="stylesheet" href="/css/pc/base.css?v=11" />
+<script	src="/js/utils.js"></script>
+
+</head>
+<style>
+body{background-color: #F6F8F9;}
+</style>
+<script>
+function get(id){
+	layer.confirm('您是否要领取？', {
+		  btn: ['确定','返回'] //按钮
+		}, function(){
+			$.post("/api/coupon/add", {id:id}, function(result) {
+				layer.closeAll();
+				if (result.success) {
+					layer.alert('领取成功', {
+						 closeBtn: 0
+						}, function(){
+							location.replace(location.href);
+						});
+				} else {
+					layer.msg(result.msg);
+				}
+			}, 'json');
+			
+		}, function(){
+			layer.closeAll();
+		});
+}
+</script>
+<body>
+
+<div class="wrap">
+
+<!-- 导航 -->
+<div th:include="/pc/common/daohang" >
+</div>
+<!-- 导航 -->
+
+<div class="model" style=" " >
+	<div class="content" style="">
+		<div style="min-height: 500px;">
+			
+			<div style="margin-top: 10px;">
+				<span style="border-bottom: 4px solid #009688; padding: 12px 7px;">
+					<span style="line-height: 55px; height: 55px;font-weight: bold;font-size: 16px;" th:text="${title}">xxx</span>
+				</span>
+			</div>
+			
+			<div style="background-color: white; min-height: 150px;margin-top: 10px;border-radius: 5px; padding: 10px; overflow: hidden;">
+				
+				<div  th:each="coupon: ${couponList}"     style="width: 190px; background-color: #1d9fd8; margin-right: 10px; float: left; overflow: hidden;">
+					
+					<div style="color: #f1ff7d;font-weight: bold; text-align: center; padding-top: 20px; padding-bottom: 20px;">
+						<span style="font-size: 40px;" th:text="${coupon.jine}">22</span>
+						<span  style="font-size: 20px;">元</span>
+					</div>
+					
+					<div style="color:white;line-height: 46px; font-size: 30px;  font-weight: bold; text-align: center; ">优惠券</div>
+					
+					<div style="text-align: center;box-sizing: border-box; margin-bottom: 10px;">
+						<span style="background-color: #f1ff7d; color: black; padding: 3px 10px 3px 10px; ">注册会员即可领取</span>
+					</div>
+					
+					<div style=" background-color: white; min-height: 25px; border: 1px dotted black ;">
+						
+						<div style="line-height: 35px; text-align: center;" th:text="${coupon.name}">25元优惠券</div>
+						
+						<div style="text-align: center; margin-top: 8px;">
+							<button th:onclick="|get(${coupon.id})|" type="button" class="layui-btn layui-btn-sm">立即领取</button>
+						</div>
+						
+						<div style="text-align: center; margin-top: 8px; margin-bottom: 8px;" th:text="|剩余${coupon.num}份|">
+							剩余80份
+						</div>
+						
+					</div>
+					
+				</div>
+				
+		 
+				
+				
+			</div>
+			
+		</div>
+	</div>
+</div>
+
+
+<!-- 底部 内容 模块 -->
+<div  th:include="/pc/common/foot">
+</div>
+<!-- 底部 内容 模块 -->
+			
+</div>
+</body>
+
+<script>
+	layui.use([ 'laydate', 'laypage', 'layer', 'table', 'carousel',
+			'upload', 'element' ], function() {
+		var laydate = layui.laydate //日期
+		, laypage = layui.laypage //分页
+		,layer = layui.layer //弹层
+		, table = layui.table //表格
+		, carousel = layui.carousel //轮播
+		, upload = layui.upload //上传
+		, element = layui.element; //元素操作
+
+		 
+	});
+</script>
+</html>

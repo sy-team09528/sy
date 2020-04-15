@@ -1,0 +1,109 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title th:text="${title}"></title>
+
+<div th:include="/common/layui"></div>
+<div th:include="/common/jq"></div>
+
+<!--添加 vue  支持加载-->
+<script src="/vue/vue.min.js"></script>
+<!--添加 vue  支持加载-->
+
+<style>
+.layui-form-item {
+	margin-bottom: 3px;
+}
+</style>
+
+</head>
+<script>
+//定义在外面。可以代码中  使用 table
+var layedit;
+layui.use([ 'layedit'], function() {
+	layedit = layui.layedit;
+});
+var layedit_demo ;
+
+var save_url = '[[${save_url}]]';
+function save() {
+	var index = layer.msg('提交中，请稍候', {
+		icon : 16,
+		time : false,
+		shade : 0.8
+	});
+	var content = layedit.getContent(layedit_demo);
+	$.post(save_url, {title:app.title,content:content,'member.id':'[[${session.member.id}]]'
+	}, function(result) {
+		if (result.success) {
+			layedit.getContent(index);
+			window.parent.closeDlg(result.msg);
+		} else {
+			layer.msg(result.msg);
+		}
+	}, 'json');
+}
+</script>
+
+<body id="app">
+	<div style="padding: 25px;" class="layui-form layui-form-pane" action="">
+		<div class="layui-form-item">
+			<label class="layui-form-label">标题</label>
+			<div class="layui-input-block">
+				<input type="text"  v-model="title" th:value="${note?.title}"  autocomplete="off"
+					class="layui-input">
+			</div>
+		</div>
+		
+		<textarea id="demo" style="display: none;"></textarea>
+		
+		<div class="layui-form-item" style="margin-top: 10px;">
+			<button class="layui-btn" th:text="${btn_text}" onclick="save()"></button>
+		</div>
+	</div>
+</body>
+
+<script>
+layui.use([ 'laydate', 'laypage', 'layer', 'table', 'carousel', 'upload',
+		'element', 'layedit'], function() {
+	var laydate = layui.laydate //日期
+	, laypage = layui.laypage //分页
+	, layer = layui.layer //弹层
+	, table = layui.table //表格
+	, carousel = layui.carousel //轮播
+	, upload = layui.upload //上传
+	,layedit = layui.layedit
+	, element = layui.element; //元素操作
+	
+    layedit.set({
+        uploadImage: {
+          url: '/admin/post/add_file' //接口url
+          ,type: 'post' //默认post
+        }
+      });
+	
+    layedit_demo = layedit.build('demo', {
+        tool: [ 'strong','italic','underline','del','left', 'center', 'right', '|'   ,'link'   ,'image','face'   ]
+  });    
+    
+	
+	var f = [[${flag}]] ;
+	if(f){
+		$.post('/admin/note/findById', {id:'[[${note?.id}]]'}, function(result) {
+			layedit.setContent(layedit_demo,result.content);
+		}, 'json');
+	}
+	
+});
+</script>
+
+<script>
+	var app = new Vue({
+		el : '#app',
+		data : {
+		}
+	});
+</script>
+</html>

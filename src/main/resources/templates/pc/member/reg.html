@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title th:text="${title}"> </title>
+
+<div th:include="/common/layui"></div>
+<div th:include="/common/jq"></div>
+
+<link rel="stylesheet" href="/css/pc/base.css?v=11" />
+<script	src="/js/utils.js"></script>
+
+
+</head>
+<style>
+</style>
+<script>
+var sendYZMFlag = true;//能发验证码。 如果发过了。就添加倒计时  设置 false  计时结束 设置 true
+var YZMTime = 60;//60秒
+var sendYZMState = false;//这个状态记录 有没有发送验证码，  提交数据前看下 如果没有发送直接返回 提示用户
+
+
+
+function reg(){
+	
+	var index = layer.load(1, {
+		shade : [ 0.1, '#fff' ]
+	//0.1透明度的白色背景
+	});
+	
+	var name = $("#name").val();
+	var password = $("#password").val();
+	var sex = $("#sex").val();
+	var phone = $("#phone").val();
+	var nickName = $("#nickName").val();
+	var yzm = $("#yzm").val();
+	
+	if (name.length<4) {
+		layer.closeAll();
+		layer.msg('请输入4位帐号!');
+		return;
+	}
+	if (password.length<6) {
+		layer.closeAll();
+		layer.msg('请输入6位密码!');
+		return;
+	}
+	if (nickName.length<2) {
+		layer.closeAll();
+		layer.msg('请输入2位昵称!');
+		return;
+	}
+	if (phone.length<11) {
+		layer.closeAll();
+		layer.msg('请输入11位电话!');
+		return;
+	}
+	
+	//判断 有没有发送验证码
+	if(!sendYZMState){
+		layer.closeAll();
+		layer.msg('请先获取验证码');
+		return ; 
+	}
+	//判断 有没有发送验证码
+	
+	
+	$.post('/member/api/reg', {name : name,pwd : password,sex:sex,phone:phone,nickName:nickName,yzm:yzm
+	}, function(result) {
+		if (result.success) {
+			layer.closeAll();
+			layer.alert(result.msg);
+			$("#reg").attr("onclick","void();"); 
+			$("#reg").text(result.msg); 
+		} else {
+			layer.closeAll();
+			layer.msg(result.msg);
+		}
+	}, 'json');
+}
+
+
+//启动定时器  每秒执行一次 declineYZMTime
+timer = setInterval(declineYZMTime,1000);
+function declineYZMTime(){
+	if(sendYZMFlag){
+	}else{
+		YZMTime--;
+		if(YZMTime<0){
+			sendYZMFlag = true;
+		}
+	}
+}
+
+function sendYZMBefore(){
+	var index = layer.load(1, {
+		shade : [ 0.1, '#fff' ]
+	//0.1透明度的白色背景
+	});
+	
+	//判断号码是不是11位
+	var phone = $("#phone").val();
+	if(phone.length==11){
+		sendYZM(phone);
+		return ;
+	}else{
+		layer.closeAll();
+		layer.msg('请输入11位电话!');
+		return;
+	}
+	//判断号码是不是11位
+	 
+	//把用户的信息发送后台校验，看看是否准确 再发送验证码
+	var i = checkInfo();
+	if(i==1){
+		$.post('check', {carno:carno,name:name,phone:phone}, function(result) {
+			layer.closeAll();
+			 if(result.success){
+			    	//信息成功 发送验证码
+				 sendYZM(phone);
+			    }else{
+			    	//信息不对
+			    	layer.open({
+			    	    content: result.msg
+			    	    ,btn: '我知道了'
+		    	    	,yes: function(index){
+		    	    		 layer.close(index);
+		    	    	 }
+			    	  });
+			    }
+		},'json');
+	}
+	//把用户的信息发送后台校验，看看是否准确 再发送验证码
+}
+
+
+//发送验证码
+function sendYZM(phone){
+	if(sendYZMFlag){
+		$.post('/member/api/send/yzm', {phone:phone}, function(result) {
+			layer.closeAll();
+			if(result.success){
+				//发送成功 添加倒计时  1分钟
+				sendYZMFlag = false;
+				YZMTime = 60;
+				
+				//标记状态已发送
+				sendYZMState = true;
+				
+				layer.closeAll();
+				layer.alert(result.msg, {
+					  skin: 'layui-layer-molv' //样式类名
+					  ,closeBtn: 0
+					}, function(){
+						layer.closeAll();
+					});
+			}else{
+				layer.alert(result.msg, {
+					  skin: 'layui-layer-molv' //样式类名
+					  ,closeBtn: 0
+					}, function(){
+						layer.closeAll();
+					});
+			}
+		},'json');
+	}else{
+		layer.closeAll();
+		layer.msg(YZMTime+"秒后才可以重新发送.");
+	}
+}
+
+
+</script>
+<body>
+
+<div class="wrap">
+
+<!-- 导航 -->
+<div th:include="/pc/common/daohang" >
+</div>
+<!-- 导航 -->
+
+<div class="model" style=" background: url(/image/base/111.jpg) no-repeat center center;   " >
+	<div class="content" style=" min-height: 700px; overflow: hidden; display: flex;display: -webkit-flex; ">
+		
+		<div style="flex:1;-webkit-flex:1; ">
+		</div>
+		
+		<div style="  width: 400px; padding-top: 190px; padding-left: 20px;">
+				<div class="layui-card">
+			        <div class="layui-card-header">注册</div>
+			        <div class="layui-card-body">
+			        	
+			        	<div class="layui-form" action="">
+						  <div class="layui-form-item">
+						    <label class="layui-form-label" style="padding: 9px 0px; width: 50px;">帐号</label>
+						    <div class="layui-input-block" style="    margin-left: 54px;">
+						      <input type="text" id="name"  autocomplete="off" placeholder="请输入注册帐号" class="layui-input">
+						    </div>
+						  </div>
+						  <div class="layui-form-item">
+						    <label class="layui-form-label" style="padding: 9px 0px; width: 50px;">密码</label>
+						    <div class="layui-input-block" style="    margin-left: 54px;">
+						      <input type="password" id="password" autocomplete="off" placeholder="请输入注册密码" class="layui-input">
+						    </div>
+						  </div>
+						  <div class="layui-form-item">
+						    <label class="layui-form-label" style="padding: 9px 0px; width: 50px;">昵称</label>
+						    <div class="layui-input-block" style="    margin-left: 54px;">
+						      <input type="text" id="nickName"  autocomplete="off" placeholder="请输入注册昵称" class="layui-input">
+						    </div>
+						  </div>
+						  
+						  <div class="layui-form-item">
+						    <label class="layui-form-label" style="padding: 9px 0px; width: 50px;">性别</label>
+						    <div class="layui-input-block" style="    margin-left: 54px;">
+						      <select id="sex">
+						        <option value="1" selected="">男</option>
+						        <option value="2">女</option>
+						      </select>
+						    </div>
+						  </div>
+						  
+						   <div class="layui-form-item">
+						    <label class="layui-form-label" style="padding: 9px 0px; width: 50px;">电话</label>
+						    <div class="layui-input-inline" style="margin-left: 5px;">
+						      <input type="text" id="phone" autocomplete="off" placeholder="请输入注册电话" class="layui-input">
+						    </div>
+						    	<div onclick="sendYZMBefore()" class="layui-form-mid layui-word-aux" style="cursor: pointer; color: red;">点击发送验证码</div>
+						  </div>
+						  
+						   <div class="layui-form-item">
+						    <label class="layui-form-label" style="padding: 9px 0px; width: 50px;">验证码</label>
+						    <div class="layui-input-block" style="    margin-left: 54px;">
+						      <input type="text" id="yzm" autocomplete="off" placeholder="请输入验证码" class="layui-input">
+						    </div>
+						  </div>
+						  
+						  <div class="layui-form-item" style="padding-left: 53px;">
+							    <button id="reg" class="layui-btn" onclick="reg()" >提交注册</button>
+						  </div>
+							
+						   <div class="layui-form-item" style="padding-left: 53px; padding-top: 22px;">
+							    <a style="color: #009688;" href="/member/login">我要登录</a>
+						   </div>
+						</div>
+			        	
+			        </div>
+				</div>
+		</div>
+	</div>
+</div>
+
+<!-- 底部 内容 模块 -->
+<div  th:include="/pc/common/foot">
+</div>
+<!-- 底部 内容 模块 -->
+			
+</div>
+</body>
+
+<script>
+	layui.use([ 'laydate', 'laypage', 'layer', 'table', 'carousel',
+			'upload', 'element' ], function() {
+		var laydate = layui.laydate //日期
+		, laypage = layui.laypage //分页
+		,layer = layui.layer //弹层
+		, table = layui.table //表格
+		, carousel = layui.carousel //轮播
+		, upload = layui.upload //上传
+		, element = layui.element; //元素操作
+
+		  
+	});
+</script>
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title th:text="${title}"></title>
+
+<div th:include="/common/layui"></div>
+<div th:include="/common/jq"></div>
+
+<link rel="stylesheet" href="/css/pc/base.css?v=11" />
+<script	src="/js/utils.js"></script>
+
+
+<!--添加 layui 自己的 css js  支持加载-->
+<script	src="/manage/manage_base.js"></script>
+<!--添加 layui 自己的 css js  支持加载-->
+
+
+</head>
+<style>
+</style>
+<script>
+//定义在外面。可以代码中  使用 table
+var table;
+layui.use([ 'laydate', 'laypage', 'layer','form', 'table', 'carousel',
+			'upload', 'element' ], function() {
+	table = layui.table;
+});
+
+//相当前刷新  重新加载
+function reload_data(){
+	var state = $("#state").val();
+  table.reload('table', {
+		where: {state:state
+	     },page: {curr: 1 //重新从第 1 页开始
+				}
+    });
+}
+
+function del(ids){
+	var index = layer.load(1, {
+		  shade: [0.1,'#fff'] //0.1透明度的白色背景
+	});
+	$.post('/collection/api/delete',{ids:ids},function(result){
+		if(result.success){
+			layer.closeAll();
+			layer.msg('删除成功');
+			reload_data();
+		}else{
+			layer.closeAll();
+			layer.msg(result.msg);
+		}
+	},'json');
+}
+
+function go(id){
+	window.location.href = "/order/"+id;
+}
+</script>
+<body>
+
+<div class="wrap">
+
+<!-- 导航 -->
+<div th:include="/pc/common/daohang" >
+</div>
+<!-- 导航 -->
+
+<div class="model" style="background-color: white; " >
+	<div class="content" style=" min-height: 700px; overflow: hidden; display: flex;display: -webkit-flex; ">
+		<div th:include="/pc/member/left_menu.html" style="width: 250px; padding-top: 15px; padding-bottom: 15px; ">
+		</div>
+		
+		<div style="flex:1;-webkit-flex:1;padding-top: 15px; ">
+			<div class="layui-table-toolbar" style="margin-bottom: 3px; ">
+				<div class="layui-btn-group">
+				    <button class="layui-btn layui-btn-sm" onclick="reload_data()"><i class="layui-icon">&#xe669;</i>刷新</button>
+			 	 </div>
+			</div>
+			<div class="layui-form layui-form-pane" style="margin-bottom: 3px; "  >
+			  <div class="layui-form-item" style="margin-bottom: 1px; ">
+			    <label class="layui-form-label" style="width: 105px;">状态</label>
+			    <div class="layui-input-inline" style="width: 120px; margin-right: 0px;">
+			    	 <select name="state" id="state"   lay-filter="state"  >
+				    	 <option value="">全部</option>
+				    	 <option value="0">未付款</option>
+				    	 <option value="1">已付款</option>
+			          </select>
+			    </div>
+			    
+			    <div class="layui-input-inline" style="  width: 113px;">
+				    	<a class="layui-btn" onclick="reload_data()">查询</a>
+				</div>
+			  </div>
+			</div>
+
+			
+			<table class="layui-hide"   id="table" lay-filter="table"></table>
+		</div>
+	</div>
+</div>
+
+<!-- 底部 内容 模块 -->
+<div  th:include="/pc/common/foot">
+</div>
+<!-- 底部 内容 模块 -->
+			
+</div>
+</body>
+<script type="text/html" id="table_bar">
+<div class="layui-btn-group">
+{{#  if(d.state==0){ }}
+<a class="layui-btn layui-btn-xs layui-btn-warm" lay-event="go">立即付款</a>
+{{#  } else if(d.state==1){     }}
+<a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="go">查看订单</a>
+<a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="kecheng">进入课程</a>
+{{#  }    }}
+</div>
+</script>
+<script type="text/html" id="format_venue">
+{{#  if(d.venue){ }}
+{{ d.venue.title}}
+{{#  }   }}
+</script>
+<script type="text/html" id="format_type">
+{{#  if(d.venue.venueType){ }}
+{{ d.venue.venueType.name}}
+{{#  }    }}
+</script>
+<script type="text/html" id="format_state">
+{{#  if(d.state==0){ }}
+未付款
+{{#  } else if(d.state==1){     }}
+<beg>已付款</beg>
+{{#  }    }}
+</script>
+
+<script>
+	layui.use([ 'laydate', 'laypage', 'layer', 'table', 'carousel',
+			'upload', 'element' ], function() {
+		var laydate = layui.laydate //日期
+		, laypage = layui.laypage //分页
+		,layer = layui.layer //弹层
+		, table = layui.table //表格
+		, carousel = layui.carousel //轮播
+		, upload = layui.upload //上传
+		, element = layui.element; //元素操作
+		  
+		 table.render({
+			    elem: '#table'
+			    ,url: '/admin/order/list?memberId=[[${member.id}]]'
+			    ,height: '630'
+			    ,totalRow: true
+				,cols: [ [
+			        {field:'num', title: '订单号', width:150,style:'font-size: 12px;'   }
+			       ,{field:'amount', title: '订单金额', width:120,style:'font-size: 12px;'  }
+			       ,{field:'venue', title: '标题', width:120,style:'font-size: 12px;' ,templet: '#format_venue' }
+			       ,{field:'state', title: '订单状态', width:120,style:'font-size: 12px;' ,templet: '#format_state' }
+			       
+			      ,{field:'createDateTime', title: '创建时间', width:150,style:'font-size: 12px;'  }
+			      ,{fixed:'right', width:160,title: '操作',  toolbar: '#table_bar'}
+			       ] ]
+			    ,id: 'table'
+			    ,page: true
+			    ,limits:[500,1000,2000,3000],
+			   limit:100
+			  });
+		
+		//监听工具条 table_bar
+			table.on('tool(table)', function(obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+				var data = obj.data //获得当前行数据
+				, layEvent = obj.event; //获得 lay-event 对应的值
+				if(layEvent === 'go'){
+					go(data.id);
+				}else if(layEvent === 'kecheng'){
+					window.location.href = "/venue/"+data.venue.id;
+				}
+			});
+			 
+		
+		
+	});
+</script>
+</html>

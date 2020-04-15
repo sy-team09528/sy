@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title th:text="${venueType.name}"></title>
+
+<!-- 引入layui框架和 jq框架 -->
+<div th:include="/common/layui"></div>
+<div th:include="/common/jq"></div>
+<!-- 引入layui框架和 jq框架 -->
+
+<link rel="stylesheet" href="/css/pc/base.css?v=11" />
+
+</head>
+<script>
+</script>
+<body>
+
+<div class="wrap">
+
+<!-- 导航 -->
+<div th:include="/pc/common/daohang" >
+</div>
+<!-- 导航 -->
+
+<div class="model" style="background-color: #f2f2f2;" >
+	<div class="content" style="min-height: 600px; margin:0 auto; width:1200px; padding-top: 21px; padding-bottom: 20px;">
+ 		
+ 		<h1  th:text="${venueType.name}" style="margin-bottom: 15px; font-size: 22px; border-bottom:4px solid #8BC34A; display: inline-block; "></h1>
+ 		
+ 		<div style="margin-top: 10px; overflow: hidden;">
+			<div style=" border: 1px solid #c2c2c2;  border-radius: 15px; padding:10px; margin-bottom: 5px;display: flex;display: -webkit-flex;" th:each="venue : ${venueList}"  >
+				<a th:href="|/venue/${venue.id}|"><img style="width: 150px; height: 150px; border-radius: 5px;" th:src="${venue.imageUrl}" /></a>
+				<div style="overflow: hidden; flex:1;-webkit-flex:1; padding-left: 10px;">
+					<div style="font-size: 18px; font-weight: bold;"><a th:href="|/venue/${venue.id}|"  th:text="${venue.title}"></a></div>
+					<div th:text="${venue.videoDesc}" style="border: 1px solid #c9c9c9; height: 100px; overflow: hidden; color: #5d5d5d; ">
+					</div>
+					<div style="color: #5d5d5d;">
+						<span style="margin-right: 15px;" th:text="|创建时间：${#dates.format(venue.createDateTime, 'yyyy-MM-dd HH:mm:ss')}|">创建时间：2119-11-55 12：22</span>
+						<span style="margin-right: 15px;" th:text="|浏览量：${venue.clickHit}|">浏览量：2119</span>
+					</div>
+				</div>
+			</div>
+ 		</div>
+ 		
+ 	 
+	</div> <!-- content结束标签 -->
+</div><!--  model 结束标签 -->
+
+<!-- 底部 内容 模块 -->
+<div  th:include="/pc/common/foot">
+</div>
+<!-- 底部 内容 模块 -->
+	
+</div>
+</body>
+
+<script>
+	layui.use([ 'laydate', 'laypage', 'layer', 'table', 'carousel',
+			'upload', 'element' ], function() {
+		var laydate = layui.laydate //日期
+		, laypage = layui.laypage //分页
+		,layer = layui.layer //弹层
+		, table = layui.table //表格
+		, carousel = layui.carousel //轮播
+		, upload = layui.upload //上传
+		, element = layui.element; //元素操作
+
+		  
+	});
+</script>
+</html>

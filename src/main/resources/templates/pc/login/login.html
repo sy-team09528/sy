@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+ 
+<title th:text="${application.config.webName}+' 登录' "></title>
+
+
+<div th:include="/common/layui"></div>
+<div th:include="/common/jq"></div>
+
+<style>
+* {
+	padding: 0px;
+	margin: 0px;
+}
+html{height: 100%;}
+body{height: 100%;}
+.win{
+border:1px;
+	top:300px;
+	position: absolute;
+	left:50%;
+    width:524px;
+    height:556px;
+    margin-left:-300px; /* 元素宽度的一半 */
+    z-index:1005;
+ /*  background-color: white; */
+}
+
+</style>
+
+</head>
+<script>
+$(function() {
+	$("#name").focus();
+});
+function go_login() {
+	var index = layer.load(1, {
+		shade : [ 0.1, '#fff' ]
+	//0.1透明度的白色背景
+	});
+
+	var name = $("#name").val();
+	var password = $("#password").val();
+
+	if (name == null || name == "") {
+		layer.closeAll();
+		layer.msg('请输入帐号!');
+		return;
+	}
+	if (password == null || password == "") {
+		layer.closeAll();
+		layer.msg('请输入密码!');
+		return;
+	}
+	
+	$.post('/user/login', {
+		name : name,
+		password : password
+	}, function(result) {
+		if (result.success) {
+			layer.closeAll();
+			window.location.href = "/admin/main";
+		} else {
+			layer.closeAll();
+			layer.msg(result.msg);
+		}
+	}, 'json');
+}
+
+</script>
+<body id="app">
+
+<img style="width: 100%; height: 100%;" src="/image/base/bg.jpg" />
+
+	<div class="win">
+			<div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief" style="border: 1px solid #ffffff69;">
+			<ul class="layui-tab-title">
+				<li class="layui-this">登录</li>
+			</ul>
+			<div class="layui-tab-content" style="height: 210px;">
+				<div class="layui-tab-item layui-show">
+					<div class="layui-form" action="">
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width: 30px;">帐号</label>
+							<div class="layui-input-block" style="margin-left: 60px;">
+								<input type="text" id="name" autocomplete="off"
+									placeholder="请输入帐号"
+									onkeydown="if(event.keyCode==13) $('#password').focus()"
+									class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width: 30px;">密码</label>
+							<div class="layui-input-block" style="margin-left: 60px;">
+								<input type="password" id="password" autocomplete="off"
+									placeholder="请输入密码"
+									onkeydown="if(event.keyCode==13) go_login()"
+									class="layui-input">
+							</div>
+						</div>
+
+						<div class="layui-form-item">
+							<div class="layui-input-block" style="margin-left: 60px;">
+								<button class="layui-btn" onclick="go_login()">登陆</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+</div>
+
+<!--  	<div class="login-box">
+		<div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+			<ul class="layui-tab-title">
+				<li class="layui-this">登录</li>
+			</ul>
+			<div class="layui-tab-content" style="height: 210px;">
+				<div class="layui-tab-item layui-show">
+					登录窗口 内容
+					<div class="layui-form" action="">
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width: 30px;">帐号</label>
+							<div class="layui-input-block" style="margin-left: 60px;">
+								<input type="text" id="name" autocomplete="off"
+									placeholder="请输入帐号"
+									onkeydown="if(event.keyCode==13) $('#password').focus()"
+									class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width: 30px;">密码</label>
+							<div class="layui-input-block" style="margin-left: 60px;">
+								<input type="password" id="password" autocomplete="off"
+									placeholder="请输入密码"
+									onkeydown="if(event.keyCode==13) go_login()"
+									class="layui-input">
+							</div>
+						</div>
+
+						<div class="layui-form-item">
+							<div class="layui-input-block" style="margin-left: 60px;">
+								<button class="layui-btn" onclick="go_login()">登陆</button>
+							</div>
+						</div>
+					</div>
+					登录窗口 内容
+				</div>
+			</div>
+		</div>
+	</div> -->
+
+
+</body>
+
+<script>
+	layui.use([ 'laydate', 'laypage', 'layer', 'table', 'carousel', 'upload',
+			'element' ], function() {
+		var laydate = layui.laydate //日期
+		, laypage = layui.laypage //分页
+		, layer = layui.layer //弹层
+		, table = layui.table //表格
+		, carousel = layui.carousel //轮播
+		, upload = layui.upload //上传
+		, element = layui.element; //元素操作
+
+	});
+</script>
+
+</html>

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="UTF-8">
+<title th:text="${title}"></title>
+
+<div th:include="/common/layui"></div>
+<div th:include="/common/jq"></div>
+
+<link rel="stylesheet" href="/css/pc/base.css?v=11" />
+<script	src="/js/utils.js"></script>
+
+</head>
+<style>
+</style>
+<script>
+$(function(){
+	loadHistory();
+});
+
+//加载历史搜索词
+function loadHistory(){
+	wordArray = JSON.parse(localStorage.getItem('wordArray'));
+	console.log(wordArray);
+	$("#historyWord").empty();
+	if(wordArray&&wordArray.length>1){
+		//遍历 加载 
+		for (var i = wordArray.length-1; i>=0; i--) {
+			console.log(wordArray[i]);
+			$("#historyWord").append('<span class="hot_item"><a href="/search?q='+wordArray[i]+'">'+wordArray[i]+'</a></span>');
+	   }
+	}
+}
+
+function search(){
+	var q = $("#q").val();
+	
+	if(q.length==0){
+		layer.msg("请输入搜索内容");
+		return ;
+	}
+	
+	var wordArray = JSON.parse(localStorage.getItem('wordArray'));
+	if(!wordArray){
+		 var wordArray = [];
+	}
+	wordArray.push(q);
+	console.log(wordArray);
+	
+	
+	//去重
+	wordArray = unique(wordArray);
+	//去重
+	localStorage.setItem('wordArray',JSON.stringify(wordArray));
+	loadHistory();
+	location.replace("/search?q="+q);
+}
+
+</script>
+<body>
+
+<div class="wrap">
+
+<!-- 导航 -->
+<div th:include="/pc/common/daohang" >
+</div>
+<!-- 导航 -->
+
+
+<!-- 轮播 -->
+<div class="model" style="background-color: white;"    >
+	<div class="content" style="  background-color: white;" th:include="/pc/common/lunbo.html">
+	</div>
+</div>
+<!-- 导航 -->
+
+
+<div class="model" style="background-color: white;" >
+	<div class="content" style=" width: 700px;">
+<style>
+.hot_item{
+	background-color: #eee; 
+	color: #000; 
+	margin-right: 6px; 
+	margin-bottom: 10px;
+	display: inline-block;
+	padding: 2px 5px 2px 5px;
+}
+</style>
+
+
+		<div style="margin-top: 20px; overflow: hidden;">
+			<div style="width: 70%; float: left;">
+				<input type="text" id="q" name="q"  autocomplete="off" placeholder="搜索信息" class="layui-input">
+			</div>
+			<div style="width: 16%; float: left;">
+				    <button onclick="search()" type="button" class="layui-btn">搜索</button>
+			</div>
+		</div>
+		
+		
+		<div style="margin-top: 50px; overflow: hidden;">
+			<div> 
+				<img style="width: 20px;" src="/image/base/hot.png"  />
+				<span>热搜词</span> 
+			</div>
+
+			<div style="margin-top: 5px;">
+				<span class="hot_item"  th:each="hot : ${hotWordList}"><a th:href="|/search?q=${hot.name}|" th:text="${hot.name}"></a></span>
+			</div>
+		</div>
+		
+		<div style="margin-top: 50px; overflow: hidden;">
+			<div> 
+				<img style="width: 20px;" src="/image/base/histoty_record.png"  />
+				<span>历史记录</span> 
+			</div>
+
+			<div style="margin-top: 5px;" id="historyWord">
+				<!-- <span class="hot_item"><a href="#">中国要在在</a></span> -->
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div class="model" style="background-color: white;" >
+	<div class="content" style="min-height: 100px;">
+		
+		<div style="margin-top: 50px; overflow: hidden;">
+			<div>
+				<span style="border-bottom: 4px solid #009688;   padding: 12px 7px;">
+					<span style="line-height: 55px; height: 55px;font-weight: bold;
+    font-size: 16px;">课程分类：</span>
+				</span>
+			</div>
+		</div>
+		
+		<div style="margin-top: 10px; overflow: hidden;">
+			
+			<a style="float: left; margin-right: 25px;" th:href="|/venue/type/${type.id}|"  th:each="type : ${typeList}">
+				<img style="width: 150px; height: 150px;     border-radius: 5px;" th:src="${type.imageUrl}" />
+				<div style="    text-align: center;" th:text="${type.name}"> </div>
+			</a>
+			
+		</div>
+	</div>
+</div>
+
+
+
+<div class="model" style="background-color: white;" >
+	<div class="content" style="min-height: 100px;">
+		
+		<div style="margin-top: 50px; overflow: hidden;">
+			<div>
+				<span style="border-bottom: 4px solid #009688;   padding: 12px 7px;">
+					<span style="line-height: 55px; height: 55px; font-weight: bold;
+    font-size: 16px;">近期热门top10：</span>
+				</span>
+			</div>
+		</div>
+		
+		<div style="margin-top: 10px; overflow: hidden;">
+			
+			<div style="  padding:10px; margin-bottom: 5px;display: flex;display: -webkit-flex;" th:each="venue : ${venueList}"  >
+				<a th:href="|/venue/${venue.id}|"><img style="width: 150px; height: 150px; border-radius: 5px;" th:src="${venue.imageUrl}" /></a>
+				<div style="overflow: hidden; flex:1;-webkit-flex:1; padding-left: 10px;">
+					<div style="font-size: 18px; font-weight: bold;"><a th:href="|/venue/${venue.id}|"  th:text="${venue.title}"></a></div>
+					<div th:text="${venue.videoDesc}" style="border: 1px solid #eee; height: 100px; overflow: hidden; color: #5d5d5d; ">
+					</div>
+					<div style="color: #5d5d5d; border: 1px solid #eee;">
+						<span style="margin-right: 15px;" th:text="|创建时间：${#dates.format(venue.createDateTime, 'yyyy-MM-dd HH:mm:ss')}|">创建时间：2119-11-55 12：22</span>
+						<span style="margin-right: 15px;" th:text="|浏览量：${venue.clickHit}|">浏览量：2119</span>
+					</div>
+				</div>
+			</div>
+			
+			<!-- <div style="  padding:10px; margin-bottom: 5px;display: flex;display: -webkit-flex;">
+				<a href="#">
+					<img style="width: 150px; height: 150px;" src="/static/upload_image/venue_cover/20191122/20191122224155.jpg" />
+				</a>
+				<div style="overflow: hidden; flex:1;-webkit-flex:1; padding-left: 10px;">
+					<div style="font-size: 18px; font-weight: bold;"><a href="#">这里显示 场馆名称</a></div>
+					<div style="border: 1px solid #eee; height: 100px; overflow: hidden; color: #5d5d5d; ">
+						这里显示场馆介绍
+						这里显示场馆介绍
+						这里显示场馆介绍这里显示场馆介绍
+					</div>
+					<div>
+						<span style="margin-right: 15px;">创建时间：2119-11-55 12：22</span>
+						<span style="margin-right: 15px;">浏览量：2119</span>
+					</div>
+				</div>
+			</div>
+			<div style="border: 1px solid black; padding:10px; margin-bottom: 5px;display: flex;display: -webkit-flex;">
+				<img style="width: 150px; height: 150px;" src="/static/upload_image/venue_cover/20191122/20191122224155.jpg" />
+				<div style="overflow: hidden; flex:1;-webkit-flex:1; padding-left: 10px;">
+					<div style="font-size: 18px; font-weight: bold;">这里显示 场馆名称</div>
+					<div style="border: 1px solid #eee; height: 100px; overflow: hidden; color: #5d5d5d; ">
+						这里显示场馆介绍
+						这里显示场馆介绍
+						这里显示场馆介绍这里显示场馆介绍
+					</div>
+					<div>
+						<span style="margin-right: 15px;">创建时间：2119-11-55 12：22</span>
+						<span style="margin-right: 15px;">浏览量：2119</span>
+					</div>
+				</div>
+			</div> -->
+			
+			
+		</div>
+		
+		
+	</div>
+</div>
+
+
+<!-- 底部 内容 模块 -->
+<div  th:include="/pc/common/foot">
+</div>
+<!-- 底部 内容 模块 -->
+			
+</div>
+</body>
+
+<script>
+	layui.use([ 'laydate', 'laypage', 'layer', 'table', 'carousel',
+			'upload', 'element' ], function() {
+		var laydate = layui.laydate //日期
+		, laypage = layui.laypage //分页
+		,layer = layui.layer //弹层
+		, table = layui.table //表格
+		, carousel = layui.carousel //轮播
+		, upload = layui.upload //上传
+		, element = layui.element; //元素操作
+
+		//常规轮播
+		carousel.render({
+			elem : '#lunbo',
+			width : '100%',
+			height : '450px',
+			arrow : 'always'
+		});
+	});
+</script>
+</html>

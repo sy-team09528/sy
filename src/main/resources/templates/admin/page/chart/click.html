@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title th:text="|${application.config.webName}-${title}|"></title>
+
+<div th:include="/common/layui"></div>
+<div th:include="/common/jq"></div>
+<link rel="stylesheet" href="/css/pc/base.css">
+<script	src="/echarts/echarts.min.js"></script>
+</head>
+
+<style>
+html{height: 100%;}
+body{height: 100%;}
+</style>
+<body>
+	
+	<div style="padding: 10px;">
+		<div id="pie" style="width: 100%; height:600px;border: 1px solid;"></div>
+	</div>
+	
+</body>
+
+<script>
+function initPieData(){
+	var myChart = echarts.init(document.getElementById('pie'));
+	var option = {
+    	    title : {
+    	        text: '课程浏览数据',
+    	        subtext: '基于浏览的数据',
+    	        x:'center'
+    	    },
+    	    tooltip : {
+    	        trigger: 'item',
+    	        formatter: "{a} <br/>{b} : {c} ({d}%)"
+    	    },
+    	    legend: {
+    	    	type: 'scroll',
+    	        orient: 'vertical',
+    	        left: 10,
+                top: 20,
+                bottom: 20,
+    	        data: []//初始化这个11111
+    	    	//,selected:  ['科幻类' ]  默认选择2个 展示2个。
+    	    },
+    	    series : [
+    	        {
+    	            name: '课程浏览量',//显示到鼠标移到展示的窗口上面的{a}，  formatter: "{a}
+    	            type: 'pie',
+    	            radius : '55%',
+    	            center: ['50%', '60%'],
+    	            data:[],//初始化这个22222
+    	            itemStyle: {
+    	                emphasis: {
+    	                    shadowBlur: 10,
+    	                    shadowOffsetX: 0,
+    	                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+    	                }
+    	            }
+    	        }
+    	    ]
+    	};
+	var series_data = "";
+	$.ajax({
+           type:"POST", 
+           url:"/admin/chart/click/data", 
+           async:false,
+           dataType:"json", 
+           success:function(result){
+           for(var i=0;i<result.length;i++){
+        	   		//  22222
+        		   option.series[0].data.push({ value:result[i].clickHit, name:result[i].title});
+        		   //   1111
+        		  option.legend.data.push(result[i].title);
+       		}
+          }
+    });
+	//上面是同步代码块。  执行完后 才执行它。
+	myChart.setOption(option);
+}
+$(function(){
+	initPieData();
+});
+</script>
+
+</html>

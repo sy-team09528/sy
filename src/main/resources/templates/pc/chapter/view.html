@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="UTF-8">
+<title th:text="${title}"></title>
+
+<div th:include="/common/layui"></div>
+<div th:include="/common/jq"></div>
+
+<link rel="stylesheet" href="/css/pc/base.css?v=11" />
+<script	src="/js/utils.js"></script>
+
+</head>
+<style>
+
+body{background-color: #c7c7c733;}
+</style>
+<script>
+</script>
+<body>
+
+<div class="wrap">
+
+<!-- 导航 -->
+<div th:include="/pc/common/daohang" >
+</div>
+<!-- 导航 -->
+
+<div class="model" style="background-color: #c7c7c733; " >
+	<div class="content"style="  padding: 20px 0px 20px 0px; overflow: hidden; min-height: 500px;  ">
+			
+			<h1 th:text="${chapter.venue.title}"></h1>
+			
+			<div style="overflow: hidden; margin-top: 10px;">
+				<div class="fly-card"  >
+					<div class="fly-card-header" th:text="${chapter.title}">内容</div>
+					<div class="fly-card-body" style="min-height: 100px;padding-bottom: 0px; ">
+						<div th:utext="${chapter.content}">
+						</div>
+					</div>
+				</div>
+	 		</div>
+ 			
+	</div>
+</div>
+
+<!-- 底部 内容 模块 -->
+<div  th:include="/pc/common/foot">
+</div>
+<!-- 底部 内容 模块 -->
+			
+</div>
+</body>
+
+<script>
+	layui.use([ 'laydate', 'laypage', 'layer', 'table', 'carousel',
+			'upload', 'element' ], function() {
+		var laydate = layui.laydate //日期
+		, laypage = layui.laypage //分页
+		,layer = layui.layer //弹层
+		, table = layui.table //表格
+		, carousel = layui.carousel //轮播
+		, upload = layui.upload //上传
+		, element = layui.element; //元素操作
+
+		  
+	});
+</script>
+</html>

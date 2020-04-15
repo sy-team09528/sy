@@ -1,0 +1,33 @@
+<meta charset="UTF-8" />
+
+<script>
+var memberId = '[[${session.member?.id}]]'
+
+function send(){
+	if(memberId==''){
+		layer.msg("请登录用户");
+		return;
+	}
+	window.location.href = "/post/add";
+}
+
+function search_(){
+	var q = $("#q").val();
+	if(q.length<1){
+		layer.msg("请输入搜索内容");
+		return;
+	}
+	window.location.href = "/post/search?q="+q;
+}
+</script>
+
+<div class="content" style="padding: 5px 0px 5px 0px; box-sizing: border-box;">
+	<a class="layui-btn"   href="/post/index"><i class="layui-icon">&#xe68e;</i>论坛首页</a>
+	<a onclick="send()" type="button" class="layui-btn">发表贴子</a>
+	
+	<div style="width:300px; display: inline-block;">
+		<input type="text" id="q" th:value="${q}" autocomplete="off" placeholder="请输入搜索内容" class="layui-input">
+	</div>
+	<a onclick="search_()" type="button" class="layui-btn">搜索贴子</a>
+	
+</div>

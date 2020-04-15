@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title th:text="${note?.title}"></title>
+
+<div th:include="/common/layui"></div>
+<div th:include="/common/jq"></div>
+<style>
+body{
+    background-color: #e2e2e2;
+    padding: 20px;
+}
+</style>
+</head>
+
+<body id="app">
+	<div style="background-color: white;  padding: 10px;">
+		<div style="font-size: 15px; font-weight: bold;" th:text="${note?.title}"></div>
+		<div style="margin-top: 20px; color: #929292;" th:text="${#dates.format(note.createDateTime, 'yyyy-MM-dd HH:mm:ss')}" >201325-45</div>
+	</div>
+	
+	<div style="background-color: white;  padding: 10px; margin-top:10px;">
+		<div style="font-size: 15px; min-height: 400px;  " th:utext="${note?.content}"></div>
+	</div>
+	
+</body>
+
+<script>
+layui.use([ 'laydate', 'laypage', 'layer', 'table', 'carousel', 'upload',
+		'element', 'layedit'], function() {
+	var laydate = layui.laydate //日期
+	, laypage = layui.laypage //分页
+	, layer = layui.layer //弹层
+	, table = layui.table //表格
+	, carousel = layui.carousel //轮播
+	, upload = layui.upload //上传
+	,layedit = layui.layedit
+	, element = layui.element; //元素操作
+	
+});
+</script>
+
+</html>

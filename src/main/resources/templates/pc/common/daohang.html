@@ -1,0 +1,73 @@
+<meta charset="UTF-8" />
+<style>
+.top{
+	background-color: #d2d2d2;
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#d81e06), to(#d81e06));
+    background-image: -moz-linear-gradient(#d81e06, #d81e06);
+    background-image: -o-linear-gradient(#d81e06, #d81e06);
+    background-image: linear-gradient(#d81e06, #d81e06);
+}
+.top_item{
+	margin-left: 5px;
+}
+.top_item a{
+	color: #1e9fff;
+}
+</style>
+
+<div class="model" style="background-color: #393D49;">
+	<div class="content">
+	
+		<div style="display: inline-block; position:absolute; right:5px; top:12px;  font-size:13px; color:#333;  padding: 7px 0px 7px 0px;">
+			<span style="color: white;" class="top_item" th:text="|您好，欢迎来到， ${application.config.webName}|">您好，欢迎</span>
+			
+			<span th:if="${#bools.isTrue(session.member==null)}"   class="top_item"  style="color: white;">[<a style="color: white;" href="/member/login">登录</a>]</span>
+			<span th:if="${#bools.isTrue(session.member==null)}" class="top_item"  style="color: white;">[<a style="color: white;" href="/member/reg">注册</a>]</span>
+			<span  th:if="${#bools.isTrue(session.member!=null)}" class="top_item"  style="color: white;" >[<a style="color: white;" href="/member/home">个人中心</a>]</span>
+			<span th:if="${#bools.isTrue(session.member!=null)}" class="top_item"  style="color: white;">[<a style="color: white;" href="/member/logout">注销登录</a>]</span>
+		</div>
+			
+			
+			<div style="float: left; height: 60px; overflow: hidden;">
+				<a style="display: block;" href="/index">
+					<img src="/image/base/logo.png" />
+				</a>
+			</div>
+			
+			<div style=" float:left; ">
+				<ul class="layui-nav" style=" ">
+					<li class="layui-nav-item">
+						<a style="font-weight: bold;" href="/index">首页</a>
+					</li>
+					<li class="layui-nav-item">
+						<a style="font-weight: bold;"  href="javascript:;">分类导览</a>
+							<dl class="layui-nav-child">
+							
+						      <dd th:each="type : ${application.typeList}"><a th:text="${type.name}" th:href="|/venue/type/${type.id}|"> </a></dd>
+						    </dl>
+					</li>
+					<li class="layui-nav-item">
+						<a style="font-weight: bold;"  href="/coupon/index">优惠券</a>
+					</li>
+					<li class="layui-nav-item">
+						<a style="font-weight: bold;"  href="/hot">近期热门</a>
+					</li>
+					
+					<li class="layui-nav-item">
+						<a style="font-weight: bold;"  href="/post/index">论坛</a>
+					</li>
+					
+					<li class="layui-nav-item">
+						<a style="font-weight: bold;"  href="/member/home">个人中心</a>
+					</li>
+					<li class="layui-nav-item">
+						<a style="font-weight: bold;"  href="/contact">联系我们</a>
+					</li>
+				</ul>
+			</div>
+			
+			<!--content 内部   清除浮动 -->
+			<div style=" clear:both;"></div>
+	</div>
+
+</div>

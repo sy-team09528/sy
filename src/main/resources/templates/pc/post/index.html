@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title th:text="${title}"></title>
+
+<!-- 引入layui框架和 jq框架 -->
+<div th:include="/common/layui"></div>
+<div th:include="/common/jq"></div>
+<!-- 引入layui框架和 jq框架 -->
+
+<link rel="stylesheet" href="/css/pc/base.css?v=11" />
+
+</head>
+<style>
+body {
+	background-color: #F2F2F2;
+}
+</style>
+<body>
+	
+	<div class="wrap">
+		
+		<!-- 导航 -->
+		<div th:include="/pc/common/daohang"></div>
+		<!-- 导航 -->
+		
+		<div class="model" style="background-color: white;" th:include="/pc/post/top.html">
+		</div>
+		
+		<div class="model" style="margin-top: 10px;">
+			<div class="content" style=" padding: 5px 0px 5px 0px;">
+				<div class="layui-card">
+					<div class="layui-card-header">贴子</div>
+					<div class="layui-card-body" style="min-height: 700px; ">
+						<div>
+							<div  th:each="post : ${postList}"  style="display: flex;display: -webkit-flex; padding:10px 0px 10px 0px; border-bottom: 1px dotted #e2e2e2; ">
+								 <img style="width: 50px;" alt="" th:src="${post.member.imageUrl}" />
+								<div style="overflow: hidden; flex:1;-webkit-flex:1; padding:0px 0px 0px 10px;">
+									<a th:href="|/post/${post.id}|" style="line-height:30px; display:block; height: 30px; overflow: hidden;" th:text="${post.title}">xxxx</a>
+									<div style="    color: #969696;">
+										<span th:text="${post.member.nickName}">小明</span>
+										<span style="margin-left: 25px;" th:text="${#dates.format(post.createDateTime, 'yyyy-MM-dd HH:mm:ss')}">2020-22-55</span>
+										<span style="margin-left: 25px;" th:text="|浏览次数：${post.clickHit}|">浏览次数：xxx</span>
+										<span style="margin-left: 25px;" th:text="|回复次数：${post.replyHit}|">回复次数：xxx</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div id="fenye"></div>
+				
+		</div>
+	</div>
+	
+	
+	<!-- 底部 内容 模块 -->
+	<div th:include="/pc/common/foot"></div>
+	<!-- 底部 内容 模块 -->
+
+	</div>
+</body>
+
+<script>
+	layui.use([ 'laydate', 'laypage', 'layer', 'table', 'carousel', 'upload',
+			'element' ], function() {
+		var laydate = layui.laydate //日期
+		, laypage = layui.laypage //分页
+		, layer = layui.layer //弹层
+		, table = layui.table //表格
+		, carousel = layui.carousel //轮播
+		, upload = layui.upload //上传
+		, element = layui.element; //元素操作
+		
+		  //自定义每页条数的选择项
+		  laypage.render({
+		    elem: 'fenye'
+		    ,count: '[[${total}]]'
+		    ,limit: '[[${limit}]]'
+		    ,curr:'[[${page}]]'
+		  ,jump: function(obj, first){
+				//首次不执行
+			    if(!first){
+			    	 console.log(obj);
+			    	 var curr_url = window.location.href;
+			    	 console.log(obj.curr);
+				     console.log(obj.limit);
+				     // http://localhost/type?id=1&page=2 
+				     // 使用js正则 去掉后面的&page=2 
+				     //  
+				     var reg = /page/g ;
+				     if(reg.test(curr_url)){
+				    	 //有page 需要 去掉后面的数字
+				    	 var reg = /page=\d+/ ;
+				    	 curr_url = curr_url.replace(reg,"page="+obj.curr);
+				    	 window.location.href=curr_url;
+				     }else{
+				    	 //没有page
+				    	 window.location.href=curr_url+'?page='+obj.curr;
+				     }
+				     
+			    }
+		    }
+		  });
+		
+		
+	});
+</script>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title th:text="${title}"></title>
+
+<!-- 引入layui框架和 jq框架 -->
+<div th:include="/common/layui"></div>
+<div th:include="/common/jq"></div>
+<!-- 引入layui框架和 jq框架 -->
+
+<link rel="stylesheet" href="/css/pc/base.css?v=11" />
+
+</head>
+<script>
+</script>
+<style>
+.items{
+font-size: 14px;
+}
+</style>
+<body>
+
+<div class="wrap">
+
+<!-- 导航 -->
+<div th:include="/pc/common/daohang" >
+</div>
+<!-- 导航 -->
+
+<div class="model" style="background-color: white;" >
+	<div class="content" style="min-height: 400px; padding-top: 21px; padding-bottom: 20px; ">
+ 		
+ 		<div style="overflow: hidden; padding-top: 20px;">
+ 			
+ 			<div style=" width: 20%; float: left;    padding-top: 25px;">
+ 				<h1>联系我们</h1>
+ 				<div class="items">机构：山西大学</div>
+ 				<div class="items">电话：（+86）1583511XXXX</div>
+ 				<div class="items">邮箱：1234567@163.com</div>
+ 				<div class="items">地址：山西大学大东关校区</div>
+ 			</div>
+ 			<div style=" width: 78%; float: left; padding-top: 20px; padding-left: 20px;">
+ 				<h1>团队照片</h1>
+ 				<img style="width: 100%; border-radius: 15px;" src="/image/base/team.jpg" />
+ 			</div>
+ 		</div>
+ 		
+ 	 	
+	</div> <!-- content结束标签 -->
+</div><!--  model 结束标签 -->
+
+<!-- 底部 内容 模块 -->
+<div  th:include="/pc/common/foot">
+</div>
+<!-- 底部 内容 模块 -->
+	
+</div>
+</body>
+
+<script>
+	layui.use([ 'laydate', 'laypage', 'layer', 'table', 'carousel',
+			'upload', 'element' ], function() {
+		var laydate = layui.laydate //日期
+		, laypage = layui.laypage //分页
+		,layer = layui.layer //弹层
+		, table = layui.table //表格
+		, carousel = layui.carousel //轮播
+		, upload = layui.upload //上传
+		, element = layui.element; //元素操作
+
+		  
+	});
+</script>
+</html>

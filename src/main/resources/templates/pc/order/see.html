@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title th:text="|${application.config.webName} ${title}|"></title>
+
+<div th:include="/common/jq"></div>
+<div th:include="/common/layui"></div>
+
+<!--添加 vue  支持加载-->
+<script src="/vue/vue.min.js"></script>
+<!--添加 vue  支持加载-->
+
+<link href="/css/pc/shoppingcart.css?v=11111111" rel="stylesheet" />
+<link rel="stylesheet" href="/css/pc/base.css">
+
+<script>
+$(function() {
+	//初始化商品的添加  减少按钮操作
+	init_item_sub_add();
+	check_heji();
+});
+
+//初始化商品的添加  减少按钮操作
+function init_item_sub_add(){
+	var itemList = $("#goodsList  .my_list_item");
+	console.log(itemList.length);
+	
+	for(var i=0;i<itemList.length;i++){
+		var btn_sub = $(itemList[i]).find("#btn_sub");
+		var btn_add = $(itemList[i]).find("#btn_add");
+		
+		$(btn_sub).unbind("click");//这里需要 解除 绑定 
+		$(btn_sub).click(function(){
+			var input = $(this).siblings("input");
+			var curr_num = input.val();
+			curr_num = parseInt(curr_num)-1;
+			if(curr_num<1){
+				curr_num=1;
+			}
+			input.val(curr_num);
+			var item = $(this).parents(".my_list_item");
+			//console.log(item);
+			$(item).attr("num",curr_num);
+			check_heji();
+		});
+		
+		$(btn_add).unbind("click");//这里需要 解除 绑定 
+		$(btn_add).click(function(){
+			var input = $(this).siblings("input");
+			var curr_num = input.val();
+			curr_num = parseInt(curr_num)+1;
+			input.val(curr_num)
+			var item = $(this).parents(".my_list_item");
+			//console.log(item);
+			$(item).attr("num",curr_num);
+			check_heji();
+		});
+	}
+}
+
+//检测 金融 生成金融
+function check_heji(){
+	var itemList = $("#goodsList  .my_list_item");
+	console.log(itemList.length);
+	var total = 0;
+	for(var i=0;i<itemList.length;i++){
+		var num =  $(itemList[i]).attr("num");
+		var price = $(itemList[i]).attr("price");
+		total = parseFloat(total) + parseFloat(num)*parseFloat(price);
+	}
+	console.log((total).toFixed(2));
+	$("#total_heji").html("¥"+(total).toFixed(2));
+}
+
+//	pay
+function pay(){
+	var itemList = $("#goodsList  .my_list_item");
+	console.log(itemList.length);
+	var total = 0;//订单总金额
+	var data ="["
+	for(var i=0;i<itemList.length;i++){
+		var id =  $(itemList[i]).attr("id");
+		var num =  $(itemList[i]).attr("num");
+		var price = $(itemList[i]).attr("price");
+		data = data + '{"goodsId":"'+id+'","num":"'+num+'"},'
+		total = parseFloat(total) + parseFloat(num)*parseFloat(price);
+	}
+	data = data.substring(0,data.length-1);
+	data = data + "]";
+	console.log("dataJson:"+data);
+	console.log("订单总金额:"+total.toFixed(2));
+	var name = $("#name").val();
+	var phone = $("#phone").val();
+	var address = $("#address").val();
+	
+	console.log("name:"+ name);
+	console.log("phone:"+ phone);
+	console.log("address:"+ address);
+	if(name.length<1){
+		layer.closeAll();
+		 layer.msg('请输入姓名');
+		 return;
+	}
+	if(phone.length<6){
+		layer.closeAll();
+		layer.msg('请输入正确的11位手机');
+		 return;
+	}
+	if(address.length<5){
+		layer.closeAll();
+		layer.msg('请输入地址');
+		 return;
+	}
+	
+	$.post("/api/order/add", {name:name,phone:phone,address:address,data:data,total:total
+	}, function(result) {
+		layer.closeAll();
+		if(result.success){
+			layer.alert(result.msg, {
+				  skin: 'layui-layer-lan' //样式类名
+				  ,closeBtn: 0
+				}, function(){
+					layer.closeAll();
+					$(".pay_btn").attr("onclick","void();"); 
+					$(".pay_btn").text(result.msg); 
+				});
+			
+		}else{
+			layer.msg(result.msg);
+		}
+		
+		
+	}, 'json');
+	
+}
+
+</script>
+
+<style>
+.my_list_item:after {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0px;
+    right: 0px;
+    height: 1px;
+    content: '';
+    -webkit-transform: scaleY(.5);
+    transform: scaleY(.5);
+	background-color: white;
+}
+.pay_btn{
+	color: white;
+	line-height: 50px;
+	width: 120px;
+	text-align: center;
+	background-color: #4CAF50;
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#48ef22), to(#216904));
+    background-image: -moz-linear-gradient(#48ef22, #216904);
+    background-image: -o-linear-gradient(#48ef22, #216904);
+    background-image: linear-gradient(#48ef22, #216904);
+}
+</style>
+</head>
+<body>
+	<div class="wrap">
+
+	
+		<div class="model" style="overflow: hidden; background-color: #f5f5f5; " th:include="/pc/common/top.html" >
+		</div>
+		
+		<!-- 导航 -->
+		<div class="model" style="background-color: #393d49;">
+			<div class="content" style="background-color: #393d49;"
+				th:include="/pc/common/daohang.html"></div>
+		</div>
+		<!-- 导航 -->
+		
+		
+		<div class="model" style="background: #f8f8f8;">
+			<div class="content"style="background: #f8f8f8; padding: 20px 0px 20px 0px; overflow: hidden; min-height: 500px;  ">
+				
+				
+				<div id="goodsList" style="background-color: white;" >
+						<div class="my_list">
+							<div class="my_list_item" th:num="${goods.clickHit}" th:id="${goods.id}" th:price="${goods.price}"  th:each="goods : ${goodsList}"  >
+								<div class="item"  >
+									<img class="logo" th:src="${goods.imageUrl}" />
+									<div class="info">
+										<div class="title" th:text="${goods.title}">2019秋冬女装春装新款上衣连衣裙百搭打底衫女长袖雪纺衬衫t恤女</div>
+										<div class="price">
+											<span style="font-size: 13px;">¥</span>
+											<span th:text="${goods.price}">1.99</span>
+											<div class="num">
+												<span id="btn_sub" class="btn">-</span>
+												<input  type="text" th:value="${goods.clickHit}" />
+												<span id="btn_add" class="btn">+</span>
+											</div>
+										</div>
+									</div>
+								</div>
+						    </div><!-- my_list_item结束 -->
+						</div> <!-- mylist结束 -->
+				</div>
+				
+				<div class="layui-form layui-form-pane" id="app"  >
+				  <div class="layui-form-item">
+				    <label class="layui-form-label">姓名</label>
+				    <div class="layui-input-block">
+				      <input type="text" id="name" v-model="name" th:value="${session?.member?.trueName}" autocomplete="off" placeholder="请输入姓名" class="layui-input">
+				    </div>
+				  </div>
+				  <div class="layui-form-item">
+				    <label class="layui-form-label">电话</label>
+				    <div class="layui-input-block">
+				      <input type="text" id="phone"  v-model="phone" th:value="${session?.member?.phone}" autocomplete="off" placeholder="请输入电话" class="layui-input">
+				    </div>
+				  </div>
+				  <div class="layui-form-item">
+				    <label class="layui-form-label">地址</label>
+				    <div class="layui-input-block">
+				      <input type="text" id="address" v-model="address"  th:value="${session?.member?.address}" autocomplete="off" placeholder="请输入地址" class="layui-input">
+				    </div>
+				  </div>
+				</div>
+  
+			</div>
+		</div>
+		
+		
+		<div class="model" style="background: #f8f8f8;">
+			<div class="content"style="background: #f8f8f8; padding: 20px 0px 20px 0px; overflow: hidden; min-height: 50px;  ">
+ 				<div class="jiesuan">
+					<div class="jiesuan_heji">
+						<div style="  line-height: 50px; font-size: 15px; color: #797373; letter-spacing: 1px;">
+						订单金额：<span id="total_heji" style="color: #E91E63; font-weight: bold;">¥0.00</span>
+						</div>
+					</div>
+					<div class="pay_btn" onclick="pay()">
+						提交订单
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="model" style="  background: white;" th:include="/pc/common/foot.html"    >
+		</div>
+		
+	</div>
+	<!-- wrap -->
+</body>
+<script>
+	layui.use([ 'laydate', 'laypage', 'layer', 'table', 'carousel', 'upload',
+			'element' ], function() {
+		var laydate = layui.laydate //日期
+		, laypage = layui.laypage //分页
+		, layer = layui.layer //弹层
+		, table = layui.table //表格
+		, carousel = layui.carousel //轮播
+		, upload = layui.upload //上传
+		, element = layui.element; //元素操作
+
+	});
+</script>
+
+<script>
+	var app = new Vue({
+		el : '#app',
+		data : {
+		}
+	});
+</script>
+
+</html>

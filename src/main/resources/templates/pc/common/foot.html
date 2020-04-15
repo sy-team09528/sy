@@ -1,0 +1,27 @@
+<meta charset="UTF-8" />
+
+<div class="model" style="background-color: #0c0d0e;" >
+<div class="content">
+		<div style="padding: 20px 0px 20px 0px;">
+			
+			<!-- 【友情链接】开始  -->
+			<fieldset class="layui-elem-field">
+				<legend style="color: #795548" th:text="|${application.config.webName}|">xxx</legend>
+				<div class="layui-field-box">
+					<div class="link_list">
+						<a target="_blank" th:href="${link.url}"   th:text="${link.name}" th:each="link : ${application.linkList}"></a>
+					</div>
+				</div>
+			</fieldset>
+			<!-- 【友情链接】结束 -->
+	
+			<div style="overflow: hidden;">
+				<div style="display: inline-block; width: 400px; float: right;">
+					<a style="color: white;" target="_blank" href="http://www.miitbeian.gov.cn">就ICP备0050060055</a>
+				</div>
+			</div>
+				
+		</div>
+
+</div>
+</div>
