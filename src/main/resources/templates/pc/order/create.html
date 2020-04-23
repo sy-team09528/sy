@@ -2,181 +2,181 @@
 <html>
 <head>
 
-<meta charset="UTF-8">
-<title th:text="${title}"></title>
+	<meta charset="UTF-8">
+	<title th:text="${title}"></title>
 
-<div th:include="/common/layui"></div>
-<div th:include="/common/jq"></div>
+	<div th:include="/common/layui"></div>
+	<div th:include="/common/jq"></div>
 
-<link rel="stylesheet" href="/css/pc/base.css?v=11" />
-<script	src="/js/utils.js"></script>
+	<link rel="stylesheet" href="/css/pc/base.css?v=11" />
+	<script	src="/js/utils.js"></script>
 
 </head>
 <style>
-body{background-color: #c7c7c733;}
-.jiesuan{
-	height: 50px; 
-	width: 100%;  
-	position: absolute;  
-	left: 0;  
-	bottom: 6px;
-	background-color: white;
-	display: flex;
-	display: -webkit-flex; 
-}
+	body{background-color: #c7c7c733;}
+	.jiesuan{
+		height: 50px;
+		width: 100%;
+		position: absolute;
+		left: 0;
+		bottom: 6px;
+		background-color: white;
+		display: flex;
+		display: -webkit-flex;
+	}
 
-.jiesuan_img{
-	width: 75px; 
-	display:inline-block;
-}
-.jiesuan_img img{
-	padding-left:5px;
-	width: 25px;
-	padding-left:12px;
-	display:inline-block;
-	vertical-align: middle;
-}
-.jiesuan_img span{
-	padding-left:5px;
-	display:inline-block;
-	line-height: 50px;
-	vertical-align: middle;
-	font-size: 13px;
-	color: #4a4a4a;
-}
-.jiesuan_heji{
-	flex:1;
-	-webkit-flex:1;
-}
-.jiesuan_btn{
-	color: white;
-	line-height: 50px;
-	width: 120px;
-	text-align: center;
-	background-color: #d64e7c;
-    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#fd1c68), to(#de60ce));
-    background-image: -moz-linear-gradient(#fd1c68, #de60ce);
-    background-image: -o-linear-gradient(#fd1c68, #de60ce);
-    background-image: linear-gradient(#fd1c68, #de60ce);
-}
-.pay_btn{
-	color: white;
-	line-height: 50px;
-	width: 120px;
-	text-align: center;
-	background-color: #009688;
-}
+	.jiesuan_img{
+		width: 75px;
+		display:inline-block;
+	}
+	.jiesuan_img img{
+		padding-left:5px;
+		width: 25px;
+		padding-left:12px;
+		display:inline-block;
+		vertical-align: middle;
+	}
+	.jiesuan_img span{
+		padding-left:5px;
+		display:inline-block;
+		line-height: 50px;
+		vertical-align: middle;
+		font-size: 13px;
+		color: #4a4a4a;
+	}
+	.jiesuan_heji{
+		flex:1;
+		-webkit-flex:1;
+	}
+	.jiesuan_btn{
+		color: white;
+		line-height: 50px;
+		width: 120px;
+		text-align: center;
+		background-color: #d64e7c;
+		background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#fd1c68), to(#de60ce));
+		background-image: -moz-linear-gradient(#fd1c68, #de60ce);
+		background-image: -o-linear-gradient(#fd1c68, #de60ce);
+		background-image: linear-gradient(#fd1c68, #de60ce);
+	}
+	.pay_btn{
+		color: white;
+		line-height: 50px;
+		width: 120px;
+		text-align: center;
+		background-color: #009688;
+	}
 </style>
 <script>
-var orderJine = '[[${venue.price}]]';
-var myCouponId = '';
-var total_heji = '[[${venue.price}]]';
-//pay
-function pay(){
-	$.post("/api/order/add", {venueId:'[[${venue.id}]]',myCouponId:myCouponId,total_heji:total_heji}, function(result) {
-		layer.closeAll();
-		if(result.success){
-			layer.alert('订单创建成功', {
-				  skin: 'layui-layer-lan' //样式类名
-				  ,closeBtn: 0
+	var orderJine = '[[${venue.price}]]';
+	var myCouponId = '';
+	var total_heji = '[[${venue.price}]]';
+	//pay
+	function pay(){
+		$.post("/api/order/add", {venueId:'[[${venue.id}]]',myCouponId:myCouponId,total_heji:total_heji}, function(result) {
+			layer.closeAll();
+			if(result.success){
+				layer.alert('订单创建成功', {
+					skin: 'layui-layer-lan' //样式类名
+					,closeBtn: 0
 				}, function(){
 					layer.closeAll();
-					$(".pay_btn").attr("onclick","void();"); 
-					$(".pay_btn").text("订单创建成功"); 
+					$(".pay_btn").attr("onclick","void();");
+					$(".pay_btn").text("订单创建成功");
 					window.location.href = "/order/"+result.orderId;
 				});
-		}else{
-			layer.msg(result.msg);
-		}
-	}, 'json');
-}
+			}else{
+				layer.msg(result.msg);
+			}
+		}, 'json');
+	}
 
-function cal(){
-	myCouponId = $("#myCouponId").val();
-	$.post("/admin/my/coupon/findById", {id:myCouponId}, function(result) {
-		total_heji = (parseFloat(orderJine)-parseFloat(result.jine)).toFixed(2)
-		$("#total_heji").html(total_heji);
-	}, 'json');
-}
+	function cal(){
+		myCouponId = $("#myCouponId").val();
+		$.post("/admin/my/coupon/findById", {id:myCouponId}, function(result) {
+			total_heji = (parseFloat(orderJine)-parseFloat(result.jine)).toFixed(2)
+			$("#total_heji").html(total_heji);
+		}, 'json');
+	}
 </script>
 <body>
 
 <div class="wrap">
 
-<!-- 导航 -->
-<div th:include="/pc/common/daohang" >
-</div>
-<!-- 导航 -->
-
-<div class="model" style="background-color: #c7c7c733; " >
-	<div class="content" style=" min-height: 500px; padding-top: 25px;">
-		<h1 style="text-align: center; line-height: 75px;" th:text="${title}"></h1>
-		<div style=" display: flex;display: -webkit-flex; background-color: white; border-radius: 5px; padding: 10px;">
-			<img style="width: 150px;" th:src="${venue.imageUrl}" />
-			<div style=" flex:1;-webkit-flex:1; padding-left: 20px;">
-				<div style="line-height: 20px; min-height: 60px;" th:text="${venue.title}"></div>
-				<div style="color: red; font-size: 22px; font-weight: bold;" th:text="|¥${venue.price}|">22.36</div>
-			</div>
-		</div>
-		
-		
-		
+	<!-- 导航 -->
+	<div th:include="/pc/common/daohang" >
 	</div>
-</div>
+	<!-- 导航 -->
 
-<div class="model" style="background-color: #c7c7c733; " >
-	<div class="content"style="  padding: 20px 0px 20px 0px;   min-height: 50px;  ">
+	<div class="model" style="background-color: #c7c7c733; " >
+		<div class="content" style=" min-height: 500px; padding-top: 25px;">
+			<h1 style="text-align: center; line-height: 75px;" th:text="${title}"></h1>
+			<div style=" display: flex;display: -webkit-flex; background-color: white; border-radius: 5px; padding: 10px;">
+				<img style="width: 150px;" th:src="${venue.imageUrl}" />
+				<div style=" flex:1;-webkit-flex:1; padding-left: 20px;">
+					<div style="line-height: 20px; min-height: 60px;" th:text="${venue.title}"></div>
+					<div style="color: red; font-size: 22px; font-weight: bold;" th:text="|¥${venue.price}|">22.36</div>
+				</div>
+			</div>
+
+
+
+		</div>
+	</div>
+
+	<div class="model" style="background-color: #c7c7c733; " >
+		<div class="content"style="  padding: 20px 0px 20px 0px;   min-height: 50px;  ">
 			<div class="jiesuan">
 				<div style="flex: 1;  -webkit-flex: 1;">
 					<div class="layui-form"  style="width: 300px;">
 						<div class="layui-form-item">
-					    <label class="layui-form-label" >优惠券</label>
-					    <div class="layui-input-block" style="margin-top: 6px;">
-					      <select id="myCouponId" name="myCouponId" lay-filter="myCouponId">
-					       <option th:if="${#lists.isEmpty(myCouponList)}"  value="" >暂无优惠券</option>
-					       <option th:value="${myCoupon.id}"  th:text="${myCoupon.name}" th:each="myCoupon : ${myCouponList}"></option>
-					      </select>
-					    </div>
-					  </div>
+							<label class="layui-form-label" >优惠券</label>
+							<div class="layui-input-block" style="margin-top: 6px;">
+								<select id="myCouponId" name="myCouponId" lay-filter="myCouponId">
+									<option th:if="${#lists.isEmpty(myCouponList)}"  value="" >暂无优惠券</option>
+									<option th:value="${myCoupon.id}"  th:text="${myCoupon.name}" th:each="myCoupon : ${myCouponList}"></option>
+								</select>
+							</div>
+						</div>
 					</div>
 				</div>
 				<div class="jiesuan_heji">
 					<div style="float: right; width: 220px;line-height: 50px; font-size: 15px; color: #797373; letter-spacing: 1px;">
-					订单金额：<span id="total_heji" style="color: #E91E63; font-weight: bold;" th:text="|¥${venue.price}|">¥0.00</span>
+						订单金额：<span id="total_heji" style="color: #E91E63; font-weight: bold;" th:text="|¥${venue.price}|">¥0.00</span>
 					</div>
 				</div>
 				<div class="pay_btn" onclick="pay()">
 					创建订单
 				</div>
 			</div>
+		</div>
 	</div>
-</div>
 
 
 
-<!-- 底部 内容 模块 -->
-<div  th:include="/pc/common/foot">
-</div>
-<!-- 底部 内容 模块 -->
+	<!-- 底部 内容 模块 -->
+	<div  th:include="/pc/common/foot">
+	</div>
+	<!-- 底部 内容 模块 -->
 
 </div>
 </body>
 
 <script>
 	layui.use([ 'laydate', 'laypage', 'layer', 'table', 'carousel',
-			'upload', 'element' ], function() {
+		'upload', 'element' ], function() {
 		var laydate = layui.laydate //日期
-		, laypage = layui.laypage //分页
-		,layer = layui.layer //弹层
-		,form = layui.form 
-		, table = layui.table //表格
-		, carousel = layui.carousel //轮播
-		, upload = layui.upload //上传
-		, element = layui.element; //元素操作
-		
+				, laypage = layui.laypage //分页
+				,layer = layui.layer //弹层
+				,form = layui.form
+				, table = layui.table //表格
+				, carousel = layui.carousel //轮播
+				, upload = layui.upload //上传
+				, element = layui.element; //元素操作
+
 		form.on('select(myCouponId)', function(data){
 			cal();
-	   });
+		});
 		cal();
 	});
 </script>
