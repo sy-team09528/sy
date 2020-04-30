@@ -2,189 +2,193 @@
 <html>
 <head>
 
-<meta charset="UTF-8">
-<title th:text="${title}"></title>
+	<meta charset="UTF-8">
+	<title th:text="${title}"></title>
 
-<div th:include="/common/layui"></div>
-<div th:include="/common/jq"></div>
+	<div th:include="/common/layui"></div>
+	<div th:include="/common/jq"></div>
 
-<link rel="stylesheet" href="/css/pc/base.css?v=11" />
-
-
-<style>
-body{background-color: #c7c7c733;}
+	<link rel="stylesheet" href="/css/pc/base.css?v=11" />
 
 
+	<style>
+		body{background-color: #c7c7c733;}
 
-/* 列表 */
-.my_list{
-    position: relative;
-    margin-top: 0;
-    margin-bottom: 0;
-    padding-left: 0;
-    list-style: none;
-    background-color: #fff;
-}
-.my_list:before {
-    position: absolute;
-    right: 0;
-    left: 0;
-    height: 1px;
-    content: '';
-    -webkit-transform: scaleY(.5);
-    transform: scaleY(.5);
-    background-color: #c8c7cc;
-    top: -1px;
-}
-.my_list:after {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    height: 1px;
-    content: '';
-    -webkit-transform: scaleY(.5);
-    transform: scaleY(.5);
-    background-color: #c8c7cc;
-}
-.my_list_item{
-    position: relative;
-}
-.my_list_item:after {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    left: 10px;
-    right: 10px;
-    height: 1px;
-    content: '';
-    -webkit-transform: scaleY(.5);
-    transform: scaleY(.5);
-    background-color: #c8c7cc;
-}
-/* 列表 */
 
-/* 表格下面的一条线齐长 */
-.my_list_item:after {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    left: 0px;
-    right: 0px;
-    height: 1px;
-    content: '';
-    -webkit-transform: scaleY(.5);
-    transform: scaleY(.5);
-	background-color: #c8c7cc;
-}
-/* 表格下面的一条线齐长 */
-</style>
+
+		/* 列表 */
+		.my_list{
+			position: relative;
+			margin-top: 0;
+			margin-bottom: 0;
+			padding-left: 0;
+			list-style: none;
+			background-color: #fff;
+		}
+		.my_list:before {
+			position: absolute;
+			right: 0;
+			left: 0;
+			height: 1px;
+			content: '';
+			-webkit-transform: scaleY(.5);
+			transform: scaleY(.5);
+			background-color: #c8c7cc;
+			top: -1px;
+		}
+		.my_list:after {
+			position: absolute;
+			right: 0;
+			bottom: 0;
+			left: 0;
+			height: 1px;
+			content: '';
+			-webkit-transform: scaleY(.5);
+			transform: scaleY(.5);
+			background-color: #c8c7cc;
+		}
+		.my_list_item{
+			position: relative;
+		}
+		.my_list_item:after {
+			position: absolute;
+			right: 0;
+			bottom: 0;
+			left: 10px;
+			right: 10px;
+			height: 1px;
+			content: '';
+			-webkit-transform: scaleY(.5);
+			transform: scaleY(.5);
+			background-color: #c8c7cc;
+		}
+		/* 列表 */
+
+		/* 表格下面的一条线齐长 */
+		.my_list_item:after {
+			position: absolute;
+			right: 0;
+			bottom: 0;
+			left: 0px;
+			right: 0px;
+			height: 1px;
+			content: '';
+			-webkit-transform: scaleY(.5);
+			transform: scaleY(.5);
+			background-color: #c8c7cc;
+		}
+		/* 表格下面的一条线齐长 */
+	</style>
 </head>
 
 <script>
 </script>
 
 <body id="app">
-	<div style="width: 600px; margin:  0 auto;">
-		
-		
-		<div class="my_list" style="margin-top: 6px;"   >
-				<div class="my_list_item">
-					<div id="state_text" style="padding: 10px;font-size: 14px; color: #636262; text-align: center;">
-						    <beb th:if="${order.state==0}">待付款</beb>
-						    <beg th:if="${order.state==1}">已付款</beg>
-					</div>
-				</div>
+<div style="width: 600px; margin:  0 auto;">
+
+
+	<div class="my_list" style="margin-top: 6px;"   >
+		<div class="my_list_item">
+			<div id="state_text" style="padding: 10px;font-size: 14px; color: #636262; text-align: center;">
+				<beb th:if="${order.state==0}">待付款</beb>
+				<beg th:if="${order.state==1}">已付款</beg>
 			</div>
-			
-			
-			
-		
-			<div class="my_list" style="margin-top: 6px;"   >
-				<div class="my_list_item">
-					<div style="padding: 10px;font-size: 14px; color: #636262;">
-						课程信息
-					</div>
-				</div>
-				
-				<div class="my_list_item">
-					<div style="padding: 10px; font-size: 14px; color: #636262;">
-						<div style="display: flex;display: -webkit-flex;">
-							
-							<img style="width: 150px;" src="/static/upload_image/venue_cover/20200313/20200313221914.jpg" />
-							
-							<div style="flex:1;-webkit-flex:1; padding-left: 15px;">
-								<div style="font-size: 18px; line-height: 30px; min-height: 60px;" th:text="|${order.venue.title}|"></div>
-								<div class="ber"  th:text="|¥${order.venue.price}|">123</div>
-							</div>
-							
-						</div>
-					</div>
-				</div>
-			</div>
-			
-			
-			<div class="my_list" style="margin-top: 6px;"   >
-				<div class="my_list_item">
-					<div style="padding: 10px;font-size: 14px; color: #636262;">
-						订单信息
-					</div>
-				</div>
-				<div class="my_list_item">
-					<div style="padding: 10px; font-size: 14px; color: #636262;">
-						
-						<div style="display: flex;display: -webkit-flex; padding: 5px 0px 5px 0px;">
-							<div class="beg" style="width: 90px;" >下单时间：</div>
-							<div  style="flex:1;-webkit-flex:1; padding-left: 15px;" th:text="${#dates.format(order.createDateTime, 'yyyy-MM-dd HH:mm')}">xx</div>
-						</div>
-						
-						 
-						<div style="display: flex;display: -webkit-flex; padding: 5px 0px 5px 0px;">
-							<div class="beg" style="width: 90px;" >订单编号：</div>
-							<div  style="flex:1;-webkit-flex:1; padding-left: 15px;" th:text="${order.num}">xxx</div>
-						</div>
-						
-						<div th:if="${order.myCoupon!=null}" style="display: flex;display: -webkit-flex; padding: 5px 0px 5px 0px;">
-							<div class="beg" style="width: 90px;" >优惠金额：</div>
-							<div  style="flex:1;-webkit-flex:1; padding-left: 15px;"  th:text="${order?.myCoupon?.jine}">xxx</div>
-						</div>
-						
-						
-						<div style="display: flex;display: -webkit-flex; padding: 5px 0px 5px 0px;">
-							<div class="beg" style="width: 90px;" >订单金额：</div>
-							<div  style="flex:1;-webkit-flex:1; padding-left: 15px;"  th:text="${order.amount}">xxx</div>
-						</div>
-						
-						<div style="display: flex;display: -webkit-flex; padding: 5px 0px 5px 0px;">
-							<div class="beg" style="width: 90px;" >用户昵称：</div>
-							<div  style="flex:1;-webkit-flex:1; padding-left: 15px;"  th:text="${order.member.nickName}">xxx</div>
-						</div>
-						
-						<div style="display: flex;display: -webkit-flex; padding: 5px 0px 5px 0px;">
-							<div class="beg" style="width: 90px;" >联系电话：</div>
-							<div  style="flex:1;-webkit-flex:1; padding-left: 15px;" th:text="${order.member.phone}">xxx</div>
-						</div>
-						
-					</div>
-				</div>
-			</div>
-			
-			
-		
+		</div>
 	</div>
+
+
+
+
+	<div class="my_list" style="margin-top: 6px;"   >
+		<div class="my_list_item">
+			<div style="padding: 10px;font-size: 14px; color: #636262;">
+				课程信息
+			</div>
+		</div>
+
+		<div class="my_list_item">
+			<div style="padding: 10px; font-size: 14px; color: #636262;">
+				<div style="display: flex;display: -webkit-flex;">
+
+					<img style="width: 150px;" src="/static/upload_image/venue_cover/20200313/20200313221914.jpg" />
+
+					<div style="flex:1;-webkit-flex:1; padding-left: 15px;">
+						<div style="font-size: 18px; line-height: 30px; min-height: 60px;" th:text="|${order.venue.title}|"></div>
+						<div class="ber"  th:text="|¥${order.venue.price}|">123</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="my_list" style="margin-top: 6px;"   >
+		<div class="my_list_item">
+			<div style="padding: 10px;font-size: 14px; color: #636262;">
+				订单信息
+			</div>
+		</div>
+		<div class="my_list_item">
+			<div style="padding: 10px; font-size: 14px; color: #636262;">
+
+				<div style="display: flex;display: -webkit-flex; padding: 5px 0px 5px 0px;">
+					<div class="beg" style="width: 90px;" >下单时间：</div>
+					<div  style="flex:1;-webkit-flex:1; padding-left: 15px;" th:text="${#dates.format(order.createDateTime, 'yyyy-MM-dd HH:mm')}">xx</div>
+				</div>
+
+
+				<div style="display: flex;display: -webkit-flex; padding: 5px 0px 5px 0px;">
+					<div class="beg" style="width: 90px;" >订单编号：</div>
+					<div  style="flex:1;-webkit-flex:1; padding-left: 15px;" th:text="${order.num}">xxx</div>
+				</div>
+
+				<div th:if="${order.myCoupon!=null}" style="display: flex;display: -webkit-flex; padding: 5px 0px 5px 0px;">
+					<div class="beg" style="width: 90px;" >优惠金额：</div>
+					<div  style="flex:1;-webkit-flex:1; padding-left: 15px;"  th:text="${order?.myCoupon?.jine}">xxx</div>
+				</div>
+
+
+				<div style="display: flex;display: -webkit-flex; padding: 5px 0px 5px 0px;">
+					<div class="beg" style="width: 90px;" >订单金额：</div>
+					<div  style="flex:1;-webkit-flex:1; padding-left: 15px;"  th:text="${order.amount}">xxx</div>
+				</div>
+
+				<div style="display: flex;display: -webkit-flex; padding: 5px 0px 5px 0px;">
+					<div class="beg" style="width: 90px;" >用户昵称：</div>
+					<div  style="flex:1;-webkit-flex:1; padding-left: 15px;"  th:text="${order.member.nickName}">xxx</div>
+				</div>
+
+				<div style="display: flex;display: -webkit-flex; padding: 5px 0px 5px 0px;">
+					<div class="beg" style="width: 90px;" >联系电话：</div>
+					<div  style="flex:1;-webkit-flex:1; padding-left: 15px;" th:text="${order.member.phone}">xxx</div>
+				</div>
+				<div style="display: flex;display: -webkit-flex; padding: 5px 0px 5px 0px;">
+					<div class="beg" style="width: 90px;" >订单状态：</div>
+					<div  style="flex:1;-webkit-flex:1; padding-left: 15px;" th:if="${order.state==0}">待付款</div>
+					<div  style="flex:1;-webkit-flex:1; padding-left: 15px;" th:if="${order.state==1}">已付款</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+</div>
 </body>
 
 <script th:inline="none">
 	layui.use([ 'laydate', 'laypage', 'layer', 'table', 'carousel', 'upload',
-			'element' ], function() {
+		'element' ], function() {
 		var laydate = layui.laydate //日期
-		, laypage = layui.laypage //分页
-		, layer = layui.layer //弹层
-		, table = layui.table //表格
-		, carousel = layui.carousel //轮播
-		, upload = layui.upload //上传
-		, element = layui.element; //元素操作
-		
+				, laypage = layui.laypage //分页
+				, layer = layui.layer //弹层
+				, table = layui.table //表格
+				, carousel = layui.carousel //轮播
+				, upload = layui.upload //上传
+				, element = layui.element; //元素操作
+
 	});
 </script>
 </html>
