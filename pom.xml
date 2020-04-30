@@ -82,8 +82,14 @@
 		    <version>2.0.0</version>
 		</dependency>
  		<!-- 添加thymeleaf整合shiro标签 依赖 -->
- 		
- 		
+
+		<!-- 连接redies -->
+		<!-- https://mvnrepository.com/artifact/redis.clients/jedis -->
+		<dependency>
+			<groupId>redis.clients</groupId>
+			<artifactId>jedis</artifactId>
+			<version>3.1.0</version>
+		</dependency>
  		
  		
 		
