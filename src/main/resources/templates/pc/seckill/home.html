@@ -42,8 +42,12 @@
 						<span style="margin-right: 15px;" th:text="|创建时间：${#dates.format(seckillVO.create_date_time, 'yyyy-MM-dd HH:mm:ss')}|">创建时间：2119-11-55 12：22</span>
 						<span style="margin-right: 15px;" th:text="|开始时间：${#dates.format(seckillVO.start_date_time, 'yyyy-MM-dd HH:mm:ss')}|">创建时间：2119-11-55 12：22</span>
 						<span style="margin-right: 15px;" th:text="|结束时间：${#dates.format(seckillVO.end_date_time, 'yyyy-MM-dd HH:mm:ss')}|">创建时间：2119-11-55 12：22</span>
+<!--						<span style="display: none" th:text=""></span>-->
 					</div>
-					<a class="layui-btn layui-btn-xs" lay-event="seckill(seckillVO.id)">抢购</a>
+					<div>
+						<div id="id" style="margin-right: 15px;" th:text="|${seckillVO.venue_id}|"></div>
+					<a class="layui-btn layui-btn-xs" id="pay_btn" type="button" onclick="seckill()"><i class="layui-icon">&#xe609;</i>抢购</a>
+					</div>
 				</div>
 			</div>
  		</div>
@@ -61,180 +65,35 @@
 </body>
 
 <script>
-function seckill(id){
-	$.post('/admin/chat/delete',{ids:ids},function(result){
-		if(result.success){
+
+	var memberId = '[[${session.member?.id}]]';
+	function seckill(){
+		var id=$('#id').text();
+		var md5=1;
+		console.log($('#id').text());
+	if(memberId==""){
+		layer.msg("请先登录");
+	}else {
+
+		$.post('/seckill/seckillRun/'+id+'/'+md5,function (result) {
 			layer.closeAll();
-			layer.msg('删除成功');
-			reload_data();
-		}else{
-			layer.closeAll();
-			layer.msg(result.msg);
-		}
-	},'json');
+			if(result.success){
+				layer.alert('订单创建成功', {
+					skin: 'layui-layer-lan' //样式类名
+					,closeBtn: 0
+				}, function(){
+					layer.closeAll();
+					$("#pay_btn").attr("onclick","void();");
+					$("#pay_btn").text("订单创建成功");
+					window.location.href = "/order/"+result.orderId;
+				});
+			}else{
+				layer.msg(result.msg);
+			}
+		}, 'json');
+	}
 }
 
-function   initBarData(){
-	var myChart = echarts.init(document.getElementById('bar'));
-	
-	var posList = [
-	    'left', 'right', 'top', 'bottom',
-	    'inside',
-	    'insideTop', 'insideLeft', 'insideRight', 'insideBottom',
-	    'insideTopLeft', 'insideTopRight', 'insideBottomLeft', 'insideBottomRight'
-	];
-	
-	myChart.configParameters = {
-	    rotate: {
-	        min: -90,
-	        max: 90
-	    },
-	    align: {
-	        options: {
-	            left: 'left',
-	            center: 'center',
-	            right: 'right'
-	        }
-	    },
-	    verticalAlign: {
-	        options: {
-	            top: 'top',
-	            middle: 'middle',
-	            bottom: 'bottom'
-	        }
-	    },
-	    position: {
-	        options: echarts.util.reduce(posList, function (map, pos) {
-	            map[pos] = pos;
-	            return map;
-	        }, {})
-	    },
-	    distance: {
-	        min: 0,
-	        max: 100
-	    }
-	};
-	
-	myChart.config = {
-	    rotate: 90,
-	    align: 'left',
-	    verticalAlign: 'middle',
-	    position: 'insideBottom',
-	    distance: 15,
-	    onChange: function () {
-	        var labelOption = {
-	            normal: {
-	                rotate: myChart.config.rotate,
-	                align: myChart.config.align,
-	                verticalAlign: myChart.config.verticalAlign,
-	                position: myChart.config.position,
-	                distance: myChart.config.distance
-	            }
-	        };
-	        myChart.setOption({
-	            series: [{
-	                label: labelOption
-	            }, {
-	                label: labelOption
-	            }, {
-	                label: labelOption
-	            }, {
-	                label: labelOption
-	            }]
-	        });
-	    }
-	};
-	
-	
-	var labelOption = {
-	    normal: {
-	        show: true,
-	        position: myChart.config.position,
-	        distance: myChart.config.distance,
-	        align: myChart.config.align,
-	        verticalAlign: myChart.config.verticalAlign,
-	        rotate: myChart.config.rotate,
-	        formatter: '{c}  {name|{a}}',
-	        fontSize: 16,
-	        rich: {
-	            name: {
-	                textBorderColor: '#fff'
-	            }
-	        }
-	    }
-	};
-	
-	option = {
-	    color: ['#003366', '#006699', '#4cabce', '#e5323e'],
-	    tooltip: {
-	        trigger: 'axis',
-	        axisPointer: {
-	            type: 'shadow'
-	        }
-	    },
-	    legend: {
-	        data: ['收藏量', '浏览量' ]//显示所有的分类
-	    },
-	    toolbox: {
-	        show: true,
-	        orient: 'vertical',
-	        left: 'right',
-	        top: 'center',
-	        feature: {
-	            saveAsImage: {show: true}
-	        }
-	    },
-	    calculable: true,
-	    xAxis: [
-	        {
-	            type: 'category',
-	            axisTick: {show: false},
-	            data: [  ]//x轴坐标的时间  或者 类型
-	        }
-	    ],
-	    yAxis: [
-	        {
-	            type: 'value'
-	        }
-	    ],
-	    
-	    series: [
-	        {
-	            name: '收藏量',
-	            type: 'bar',
-	            barGap: 0,
-	            label: labelOption,
-	            data: [ ]
-	        },
-	        {
-	            name: '浏览量',
-	            type: 'bar',
-	            label: labelOption,
-	            data: [ ]
-	        }
-	    ]
-	};
-	
-	$.ajax({
-        type:"POST", 
-        url:"/api/venue/type/data", 
-        async:false,
-        dataType:"json", 
-        success:function(result){
-	        for(var i=0;i<result.length;i++){
-	        	option.xAxis[0].data.push(result[i].name);
-     			option.series[0].data.push(result[i].collection);
-     			option.series[1].data.push(result[i].click);
-	    	}
-	    }
-	 });
-	
-	myChart.setOption(option);
-}
-
-$(function(){
-	initBarData();
-});
 </script>
 
 <script>

@@ -1,6 +1,8 @@
 package com.ketang.VO;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ketang.entity.ser.VenueType;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -14,11 +16,23 @@ public class SeckillVO {
 	private Integer num;
 	
 	private Integer state;
-	
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(
+			pattern = "yyyy-MM-dd HH:mm:ss",
+			timezone = "GMT+8"
+	)
 	private Date create_date_time;
-	
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(
+			pattern = "yyyy-MM-dd HH:mm:ss",
+			timezone = "GMT+8"
+	)
 	private Date start_date_time;
-
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(
+			pattern = "yyyy-MM-dd HH:mm:ss",
+			timezone = "GMT+8"
+	)
 	private Date end_date_time;
 	
 	private VenueType venueType; //

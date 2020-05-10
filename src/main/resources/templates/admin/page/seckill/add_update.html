@@ -16,7 +16,6 @@
 	margin-bottom: 3px;
 }
 </style>
-
 </head>
 <script  th:inline="javascript">
 /*<![CDATA[*/
@@ -25,6 +24,7 @@ $(function(){
 });
 	var save_url = [[${save_url}]];
 	function save() {
+		console.log($("#test5").val());
 		var index = layer.msg('提交中，请稍候', {
 			icon : 16,
 			time : false,
@@ -32,7 +32,7 @@ $(function(){
 		});
 		
 		$.post(save_url, {venue_id:app.venue_id,num:app.num,
-			start_date_time:app.start_date_time,end_date_time:app.end_date_time
+			start_date_time:new Date($("#test5").val()),end_date_time:new Date($("#test6").val())
 		}, function(result) {
 			if (result.success) {
 				window.parent.closeDlg(result.msg);
@@ -60,26 +60,23 @@ $(function(){
 					  class="layui-input">
 			</div>
 		</div>
+		<div class="layui-form-item">
+		<div class="layui-inline">
+			<label class="layui-form-label">开始时间</label>
+			<div class="layui-input-inline">
+				<input type="text" class="layui-input" id="test5"  v-model="start_date_time" th:value="${seckill?.start_date_time}" placeholder="yyyy-MM-dd HH:mm:ss">
+			</div>
+		</div>
+		</div>
 
-		<div class="layui-form">
-			<div class="layui-form-item">
-				<div class="layui-inline">
-					<label class="layui-form-label">开始时间</label>
-					<div class="layui-input-inline">
-						<input type="text" class="layui-input" id="test1" placeholder="yyyy-MM-dd">
-					</div>
+		<div class="layui-form-item">
+			<div class="layui-inline">
+				<label class="layui-form-label">结束时间</label>
+				<div class="layui-input-inline">
+					<input type="text" class="layui-input" id="test6"   v-model="end_date_time" th:value="${seckill?.end_date_time}" placeholder="yyyy-MM-dd HH:mm:ss">
 				</div>
 			</div>
 		</div>
-    
-    <div class="layui-form-item">
-    <div class="layui-inline">
-      <label class="layui-form-label">结束时间</label>
-      <div class="layui-input-inline">
-        <input type="text" class="layui-input" id="test2" v-model="eend_date_time" placeholder="yyyy-MM-dd">
-      </div>
-    </div>
-    </div>
 		
 		
 		<div class="layui-form-item">
@@ -103,7 +100,14 @@ $(function(){
 		, carousel = layui.carousel //轮播
 		, upload = layui.upload //上传
 		, element = layui.element; //元素操作
-		
+		laydate.render({
+			elem: '#test5'
+			,type: 'datetime'
+		});
+		laydate.render({
+			elem: '#test6'
+			,type: 'datetime'
+		});
 	});
 	/*laydate.render({
 	    elem: '#test1'

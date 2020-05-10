@@ -9,4 +9,6 @@ public interface SeckillDao extends JpaRepository<Seckill,Integer>,JpaSpecificat
 
 	@Query(value="select * from t_seckill   where id = ?1",nativeQuery = true)
 	public Seckill findId(Integer id);
+	@Query(value ="select * from t_seckill   where venue_id = ?1",nativeQuery = true )
+	public Seckill findByVenue_id(Integer id);
 }

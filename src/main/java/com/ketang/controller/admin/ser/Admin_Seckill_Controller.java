@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import redis.clients.jedis.Jedis;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,7 +32,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
+/**
+ * 秒杀管理员管理管理
+ *
+ * */
 @Controller
 @RequestMapping("/admin/seckill")
 public class Admin_Seckill_Controller {
@@ -79,11 +81,12 @@ public class Admin_Seckill_Controller {
 	 */
 	@ResponseBody
 	@RequestMapping("/update")
-	public JSONObject update(Seckill seckill, HttpServletResponse response, HttpServletRequest request)throws Exception {
+	public JSONObject update(@Valid Seckill seckill, HttpServletResponse response, HttpServletRequest request)throws Exception {
+		System.out.println(seckill);
 		JSONObject result = new JSONObject();
-		String webPath=request.getServletContext().getRealPath("");
+		//String webPath=request.getServletContext().getRealPath("");
+		System.out.println(seckill);
 		seckillService.update(seckill);
-		
 		result.put("success", true);
 		result.put("msg", "修改成功");
 		return result;
@@ -119,10 +122,9 @@ public class Admin_Seckill_Controller {
 			venueType.setId(venueTypeId);
 			map.put("venueType", venueType);
 		}
-		
-		
 		List<SeckillVO> list = seckillService.list(map, page-1, limit);
 		Long total = seckillService.getTotal(map);
+		System.out.println(list);
 		map.clear();
 		map.put("data", list);
 		map.put("count", total);

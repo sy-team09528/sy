@@ -15,11 +15,11 @@ public class Seckill {
 	private Integer num;
 	
 	private Integer state;
-	@Temporal(TemporalType.TIMESTAMP) 
+    @Temporal(TemporalType.TIMESTAMP)
 	private Date create_date_time;
-	@Temporal(TemporalType.TIMESTAMP) 
+    @Temporal(TemporalType.TIMESTAMP)
 	private Date start_date_time;
-	@Temporal(TemporalType.TIMESTAMP) 
+    @Temporal(TemporalType.TIMESTAMP)
 	private Date end_date_time;
 	
 	public Seckill() {

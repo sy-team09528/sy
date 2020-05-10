@@ -68,8 +68,6 @@ public class HouTai_Seckill_Controller {
 	@RequestMapping("/edit")
 	public ModelAndView edit(@RequestParam(value = "id", required = false) Integer id) throws Exception {
 		ModelAndView mav = new ModelAndView();
-		
-
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<VenueType> venueTypeList = venueTypeService.list(map , 0, 100);
 		mav.addObject("venueTypeList",venueTypeList);
@@ -78,9 +76,7 @@ public class HouTai_Seckill_Controller {
 		Seckill seckill = seckillDao.findId(id);
 		mav.addObject("seckill", seckill);
 		mav.addObject("title", "修改秒杀");
-		
 		mav.addObject("isEdit", true);
-		
 		mav.addObject("btn_text", "修改");
 		mav.addObject("save_url", "/admin/seckill/update?id=" + id);
 		mav.setViewName("/admin/page/seckill/add_update.html");
