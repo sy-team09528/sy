@@ -267,7 +267,7 @@ function uploadFile2(file){
 				<div class="layui-form-item">
 					<div class="layui-input-block" style="margin-left: 0px;">
 						<button id="save" onclick="save()" class="layui-btn" th:text="${btn_text}"></button>
-						<a href="javascript:window.opener = null;window.open('', '_self');window.close();window.history.go(-1);window.location.href='https://www.baidu.com';"    class="layui-btn layui-btn-danger">关闭</a>
+						<a href="javascript:window.opener.reload_data();window.open('', '_self');window.close();window.history.go(-1);window.location.href='https://www.baidu.com';"    class="layui-btn layui-btn-danger">关闭</a>
 
 					</div>
 				</div>
