@@ -20,12 +20,13 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 @Service("seckillService")
 public class SeckillServiceImpl implements SeckillService {
-	@Autowired
+	@Resource
 	private VenueDao venueDao;
 	@Resource
 	private VenueService venueService;
@@ -33,6 +34,8 @@ public class SeckillServiceImpl implements SeckillService {
     SeckillDao seckillDao;
 	
 	Jedis jedis = new Jedis("localhost");
+
+	//获取秒杀信息
 	@Override
 	public List<SeckillVO> list(Map<String, Object> map, Integer page, Integer pageSize) {
 		Pageable pageable = PageRequest.of(page, pageSize);
@@ -71,6 +74,7 @@ public class SeckillServiceImpl implements SeckillService {
 		List<Seckill> seckillList=pages.getContent();
 		List<SeckillVO> seckillVOs=new ArrayList<SeckillVO>();
 		for (int i = 0; i < seckillList.size(); i++) {
+			//判断商品秒杀时间是否结束
 			Seckill seckill=seckillList.get(i);
 			System.out.println(seckill.getVenue_id());
 			Venue venue=venueDao.findId(seckill.getVenue_id());
@@ -92,7 +96,7 @@ public class SeckillServiceImpl implements SeckillService {
 		}
 		return seckillVOs;
 	}
-
+	//获取数量
 	@Override
 	public Long getTotal(Map<String, Object> map) {
 		// TODO Auto-generated method stub
@@ -100,47 +104,52 @@ public class SeckillServiceImpl implements SeckillService {
 			@Override
 			public Predicate toPredicate(Root<Seckill> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
 				Predicate predicate=cb.conjunction();
-				 
-				
 				// 加入 等于 
 				if (map.get("state") != null) {
 					predicate.getExpressions().add(cb.equal(root.get("state"), map.get("state")));
 				}
-			
-				
-				
 				return predicate;
 			}
 		});
 		return count;
 	}
+
+	//更新
 	@Override
 	public void update(Seckill seckill) {
 		Seckill origin = seckillDao.findId(seckill.getId());
 		seckill = repalce(seckill, origin);
 		seckillDao.save(seckill);
 	}
-	
+
+	@Override
+	public long nowTime() {
+		Date now = new Date();
+		return now.getTime();
+	}
+
+
+	//辅助更新
 	public Seckill repalce(Seckill curr, Seckill origin){
 	
-	if(curr.getVenue_id() ==null){
-		curr.setVenue_id(origin.getVenue_id());
-	}
-	if(curr.getNum() ==null){
-		
-		curr.setNum(origin.getNum());
-		jedis.set(curr.getId().toString(), curr.getNum().toString());
-	}
-	if(curr.getStart_date_time() ==null){
-		curr.setStart_date_time(origin.getStart_date_time());
-	}
-	if(curr.getEnd_date_time()==null){
-		curr.setEnd_date_time(origin.getEnd_date_time());
-	}	
-	if(curr.getState()==null){
-		curr.setState(origin.getState());
-	}
-	curr.setCreate_date_time(origin.getCreate_date_time());
-	return curr;
+		if(curr.getVenue_id() ==null){
+			curr.setVenue_id(origin.getVenue_id());
+		}
+		if(curr.getNum() ==null){
+
+			curr.setNum(origin.getNum());
+			jedis.set(curr.getId().toString(), curr.getNum().toString());
+		}
+		if(curr.getStart_date_time() ==null){
+			curr.setStart_date_time(origin.getStart_date_time());
+		}
+		if(curr.getEnd_date_time()==null){
+			curr.setEnd_date_time(origin.getEnd_date_time());
+		}
+		if(curr.getState()==null){
+			curr.setState(origin.getState());
+		}
+		curr.setCreate_date_time(origin.getCreate_date_time());
+		return curr;
 }
 }

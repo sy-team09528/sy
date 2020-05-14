@@ -16,6 +16,7 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.ketang.entity.base.CustomDateTimeSerializer;
 
@@ -79,14 +80,16 @@ public class MyCoupon {
 	public void setState(Integer state) {
 		this.state = state;
 	}
-	@JsonSerialize(using = CustomDateTimeSerializer.class)
+	//	@JsonSerialize(using = CustomDateTimeSerializer.class)
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")
 	public Date getCreateDateTime() {
-		return createDateTime;
-	}
+			return createDateTime;
+		}
 	public void setCreateDateTime(Date createDateTime) {
 		this.createDateTime = createDateTime;
 	}
-	@JsonSerialize(using = CustomDateTimeSerializer.class)
+	//@JsonSerialize(using = CustomDateTimeSerializer.class)
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")
 	public Date getUseDateTime() {
 		return useDateTime;
 	}

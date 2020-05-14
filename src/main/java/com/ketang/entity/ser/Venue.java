@@ -18,6 +18,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotEmpty;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.ketang.entity.base.CustomDateSerializer;
 import com.ketang.entity.base.CustomDateTimeSerializer;
@@ -168,7 +169,8 @@ public class Venue {
 		this.videoDesc = videoDesc;
 	}
 	
-	@JsonSerialize(using = CustomDateTimeSerializer.class)
+	//@JsonSerialize(using = CustomDateTimeSerializer.class)
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")
 	public Date getCreateDateTime() {
 		return createDateTime;
 	}

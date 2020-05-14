@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
 <meta charset="UTF-8">
 <title th:text="${title}"></title>
@@ -30,23 +30,32 @@
  		
  		
  		
- 		<h1 style="margin-bottom: 15px; font-size: 22px; border-bottom:4px solid #8BC34A; display: inline-block; ">正在秒杀</h1>
- 		
- 		
+ 		<h1 style="margin-bottom: 15px; font-size: 22px; border-bottom:4px solid #8BC34A; display: inline-block; ">秒杀</h1>
+
+
  		<div style="margin-top: 10px; overflow: hidden; min-height: 500px;">
-			<div style=" border: 1px solid #c2c2c2;  border-radius: 15px; padding:10px; margin-bottom: 5px;display: flex;display: -webkit-flex;" th:each="seckillVO : ${seckillVOs}"  >
+			<div style=" border: 1px solid #c2c2c2;  border-radius: 15px; padding:10px; margin-bottom: 5px;display: flex;display: -webkit-flex;" th:each="seckillVO : ${seckillVOs}" >
+<!--				<div style=" border: 1px solid #c2c2c2;  border-radius: 15px; padding:10px; margin-bottom: 5px;display: flex;display: -webkit-flex;" th:each="seckillVO : ${seckillVOs}"  >-->
+
 				<a th:href="|/venue/${seckillVO.venue_id}|"><img style="width: 150px; height: 150px;" th:src="${seckillVO.imageUrl}" /></a>
 				<div style="overflow: hidden; flex:1;-webkit-flex:1; padding-left: 10px;">
 					<div style="font-size: 18px; font-weight: bold;"><a th:href="|/venue/${seckillVO.venue_id}|"  th:text="${seckillVO.title}"></a></div>
 					<div style="color: #5d5d5d;">
-						<span style="margin-right: 15px;" th:text="|创建时间：${#dates.format(seckillVO.create_date_time, 'yyyy-MM-dd HH:mm:ss')}|">创建时间：2119-11-55 12：22</span>
-						<span style="margin-right: 15px;" th:text="|开始时间：${#dates.format(seckillVO.start_date_time, 'yyyy-MM-dd HH:mm:ss')}|">创建时间：2119-11-55 12：22</span>
-						<span style="margin-right: 15px;" th:text="|结束时间：${#dates.format(seckillVO.end_date_time, 'yyyy-MM-dd HH:mm:ss')}|">创建时间：2119-11-55 12：22</span>
-<!--						<span style="display: none" th:text=""></span>-->
+<!--						<span style="margin-right: 15px;" th:text="|创建时间：${#dates.format(seckillVO.create_date_time, 'yyyy-MM-dd HH:mm:ss')}|">创建时间：2119-11-55 12：22</span><br>-->
+						<span th:id="'start'+${seckillVO.id}"  style="margin-right: 15px;" th:text="|开始时间：${#dates.format(seckillVO.start_date_time, 'yyyy-MM-dd HH:mm:ss')}|">开始时间：2119-11-55 12：22</span><br>
+						<span style="margin-right: 15px;"  th:text="|结束时间：${#dates.format(seckillVO.end_date_time, 'yyyy-MM-dd HH:mm:ss')}|">结束时间：2119-11-55 12：22</span><br>
+						<span style="margin-right: 15px;" th:text="|剩余库存：${seckillVO.num}|"></span><br>
+						<input th:id="'tal' + ${seckillVO.id}" style="border:none;width:100px" readonly="readonly"/></text>
+						<span style='color:#FF0002;margin-left:10px;'>
+							<input style="width:25px" th:id="'day' + ${seckillVO.id}" readonly="readonly"/></text>天
+							<input style="width:25px" th:id="'hou' + ${seckillVO.id}" readonly="readonly"/></text>时
+							<input style="width:25px" th:id="'min' + ${seckillVO.id}" readonly="readonly"/></text>分
+							<input style="width:25px" th:id="'sec' + ${seckillVO.id}" readonly="readonly"/></text>秒
+						</span>
 					</div>
 					<div>
-						<div id="id" style="margin-right: 15px;" th:text="|${seckillVO.venue_id}|"></div>
-					<a class="layui-btn layui-btn-xs" id="pay_btn" type="button" onclick="seckill()"><i class="layui-icon">&#xe609;</i>抢购</a>
+<!--						<div id="id" style="margin-right: 15px;" th:text="|${seckillVO.venue_id}|"></div>-->
+					<a class="layui-btn layui-btn-xs" id="pay_btn" type="button" th:onclick="seckill([[${seckillVO.venue_id}]])"><i class="layui-icon">&#xe609;</i>抢购</a>
 					</div>
 				</div>
 			</div>
@@ -64,13 +73,105 @@
 </div>
 </body>
 
+<script th:inline="javascript">
+	var seckillVOs='[[${seckillVOs}]]';
+	var seckillVOsJSON=JSON.parse(seckillVOs);
+	var seckillList=[];
+	var count=0;
+	var count1=0;
+	$.each(seckillVOsJSON,function (key, value) {
+		count++;
+		console.log(key, value);
+		var seckill = {id:value.id, start_date_time:new Date(value.start_date_time).getTime(), end_date_time:new Date(value.end_date_time).getTime()};
+		seckillList.push(seckill);
+		if (count>=seckillVOsJSON.length){
+			countdown(seckillList);
+		}
+	});
+
+
+
+	var nowTime1='[[${nowTime}]]';
+
+	// setInterval(function () { //每1秒刷新一次图表
+	// 	//需要执行的代码写在这里
+	// 	nowTime=parseInt(nowTime)+1000;
+	// }, 1000);
+
+	// function getNewTime() {
+	// 	return now_Time;
+	// }
+	//小于10的格式化函数
+	function timeFormat(times) {
+		return times< 10 ? '0' + times: times;
+	};
+	//计时
+	function countdown(seckillList) {
+		let nowTime=parseInt(nowTime1)+(1000*count1);
+		for (let i in seckillList) {
+			let startTime=seckillList[i].start_date_time;
+			let endTime=seckillList[i].end_date_time
+			let id=seckillList[i].id;
+			console.log(id)
+			if (startTime-nowTime>0){
+				let time = (startTime-nowTime) / 1000;
+				// 获取天、时、分、秒
+				let day = parseInt(time / (60 * 60 * 24));
+				let hou = parseInt(time % (60 * 60 * 24) / 3600);
+				let min = parseInt(time % (60 * 60 * 24) % 3600 / 60);
+				let sec = parseInt(time % (60 * 60 * 24) % 3600 % 60);
+				document.getElementById('tal'+id).value='距离开始还有';
+				document.getElementById('day'+id).value=this.timeFormat(day);
+				document.getElementById('hou'+id).value=this.timeFormat(hou);
+				document.getElementById('min'+id).value=this.timeFormat(min);
+				document.getElementById('sec'+id).value=this.timeFormat(sec);
+			} else if (endTime - nowTime > 0&&nowTime-startTime>0) {
+				let time = (endTime - nowTime) / 1000;
+				// 获取天、时、分、秒
+				let day = parseInt(time / (60 * 60 * 24));
+				let hou = parseInt(time % (60 * 60 * 24) / 3600);
+				let min = parseInt(time % (60 * 60 * 24) % 3600 / 60);
+				let sec = parseInt(time % (60 * 60 * 24) % 3600 % 60);
+				document.getElementById('tal'+id).value='距离结束还有';
+				document.getElementById('day'+id).value=this.timeFormat(day);
+				document.getElementById('hou'+id).value=this.timeFormat(hou);
+				document.getElementById('min'+id).value=this.timeFormat(min);
+				document.getElementById('sec'+id).value=this.timeFormat(sec);
+			}else {
+				document.getElementById('tal'+id).value='已结束';
+				document.getElementById('day'+id).value='00';
+				document.getElementById('hou'+id).value='00';
+				document.getElementById('min'+id).value='00';
+				document.getElementById('sec'+id).value='00';
+			};
+		}
+		count1++;
+		setTimeout(function(){
+			countdown(seckillList)
+		}, 1000);
+	}
+
+</script>
+
 <script>
 
+
+
+// <!--	-->
 	var memberId = '[[${session.member?.id}]]';
-	function seckill(){
-		var id=$('#id').text();
+
+
+	function seckill(id){
+
+
+		// for(var i in seckillList){
+		// 	console.log(seckillList[i]);
+		// 	var start_date_time=seckillList[i].start_date_time;
+		// 	var id=seckillList[i].id;
+		// 	console.log(start_date_time);
+		// 	document.getElementById(id).value=start_date_time;
+		// }
 		var md5=1;
-		console.log($('#id').text());
 	if(memberId==""){
 		layer.msg("请先登录");
 	}else {
@@ -98,14 +199,15 @@
 
 <script>
 	layui.use([ 'laydate', 'laypage', 'layer', 'table', 'carousel',
-			'upload', 'element' ], function() {
+			'upload', 'element','util' ], function() {
 		var laydate = layui.laydate //日期
 		, laypage = layui.laypage //分页
 		,layer = layui.layer //弹层
 		, table = layui.table //表格
 		, carousel = layui.carousel //轮播
 		, upload = layui.upload //上传
-		, element = layui.element; //元素操作
+		, element = layui.element //元素操作
+		,util=layui.util;//工具集
 
 		  
 	});
