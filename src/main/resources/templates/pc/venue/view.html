@@ -286,7 +286,7 @@ iframe{
 		        	
 		         	<div style="display: inline-block; width: 250px; padding: 10px;" th:each="venue: ${tuijianList}" >
 		         		<a th:href="|/venue/${venue.id}|">
-		         			<img th:src="${venue?.imageUrl}" />
+		         			<img style="width: 230px" th:src="${venue?.imageUrl}" />
 		         		</a>
 		         		<div>
 		         			<a th:href="|/venue/${venue.id}|"  th:text="${venue.title}"></a>
