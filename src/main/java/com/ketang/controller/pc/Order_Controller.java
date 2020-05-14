@@ -9,6 +9,9 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,6 +49,8 @@ public class Order_Controller {
 	private MyCouponService myCouponService;
 	@Resource
 	private MyCouponDao myCouponDao  ;
+	@Autowired
+	private RedisTemplate redisTemplate;
 	
 	/**
 	 *    #确定订单的页
@@ -145,7 +150,11 @@ public class Order_Controller {
 		String[] idsStr = ids.split(",");
 		JSONObject result = new JSONObject();
 		for (int i = 0; i < idsStr.length; i++) {
+			Order order = orderDao.findId(Integer.parseInt(idsStr[i]));
+			System.out.println(order.getMember().getId()+"-"+order.getVenue().getId());
+			redisTemplate.boundHashOps("order").delete(order.getMember().getId()+"-"+order.getVenue().getId());
 			orderDao.deleteById(Integer.parseInt(idsStr[i]));
+
 		}
 		result.put("success", true);
 		return result;

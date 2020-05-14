@@ -17,5 +17,7 @@ public interface OrderDao extends JpaRepository<Order,Integer>,JpaSpecificationE
 	
 	@Query(value="select COUNT(*)  from t_order where member_id = ?1 and venue_id = ?2",nativeQuery = true)
 	public Integer find_memberId_venueId(Integer memberId,Integer venudId);
-	
+
+	@Query(value="select * from t_order where member_id = ?1 and venue_id = ?2",nativeQuery = true)
+	public Order findByMemberIdAndVenueId(Integer memberId,Integer venudId);
 }

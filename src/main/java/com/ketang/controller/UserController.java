@@ -42,6 +42,8 @@ public class UserController {
 			result.put("msg","登陆成功");
 			User user = userDao.findByName(name);
 			SecurityUtils.getSubject().getSession().setAttribute("currentUser", user); //把当前用户信息存到session中
+			User user1= (User) SecurityUtils.getSubject().getSession().getAttribute("currentUser");
+
 		} catch (UnknownAccountException e) {
 			result.put("success", false);
 			result.put("msg","用户名不存在");

@@ -94,7 +94,7 @@ body {
 					</div>
 					
 					<div style="margin-top: 12px; background-color: #f8f8f8; color: #999; padding:12px;  display: flex;display: -webkit-flex;">
-						<img style="width: 50px;" alt="" th:src="${post.member.imageUrl}" />
+						<img style="width: 50px;height: 50px;" alt="" th:src="${post.member.imageUrl}" />
 						<div style="overflow: hidden; flex:1;-webkit-flex:1; padding:0px 0px 0px 15px;">
 							<div style="line-height:25px; color: #01AAED;" th:text="${post.member.nickName}">xx</div> 
 							<div style="line-height:25px;" th:text="|发贴时间：${#dates.format(post.createDateTime, 'yyyy-MM-dd HH:mm:ss')}|">2020-20-20</div>

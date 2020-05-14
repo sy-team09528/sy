@@ -35,7 +35,7 @@ body {
 					<div class="layui-card-body" style="min-height: 700px; ">
 						<div>
 							<div  th:each="post : ${postList}"  style="display: flex;display: -webkit-flex; padding:10px 0px 10px 0px; border-bottom: 1px dotted #e2e2e2; ">
-								 <img style="width: 50px;" alt="" th:src="${post.member.imageUrl}" />
+								 <img style="width: 50px; height: 50px;" alt="" th:src="${post.member.imageUrl}" />
 								<div style="overflow: hidden; flex:1;-webkit-flex:1; padding:0px 0px 0px 10px;">
 									<a th:href="|/post/${post.id}|" style="line-height:30px; display:block; height: 30px; overflow: hidden;" th:text="${post.title}">xxxx</a>
 									<div style="    color: #969696;">

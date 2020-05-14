@@ -1,5 +1,6 @@
 package com.ketang.entity.ser;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -16,6 +17,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.ketang.entity.base.CustomDateTimeSerializer;
 
@@ -27,7 +29,7 @@ import net.sf.json.JSONObject;
  */
 @Entity
 @Table(name = "t_order")
-public class Order {
+public class Order implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -90,8 +92,8 @@ public class Order {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	
-	@JsonSerialize(using = CustomDateTimeSerializer.class)
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")
+	//@JsonSerialize(using = CustomDateTimeSerializer.class)
 	public Date getCreateDateTime() {
 		return createDateTime;
 	}
@@ -115,9 +117,21 @@ public class Order {
 	public void setMember(Member member) {
 		this.member = member;
 	}
-	
-	
-	
-	
-	
+
+	public Order() {
+	}
+
+	@Override
+	public String toString() {
+		return "Order{" +
+				"id=" + id +
+				", num='" + num + '\'' +
+				", createDateTime=" + createDateTime +
+				", amount=" + amount +
+				", member=" + member +
+				", venue=" + venue +
+				", state=" + state +
+				", myCoupon=" + myCoupon +
+				'}';
+	}
 }
