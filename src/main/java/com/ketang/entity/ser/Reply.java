@@ -27,7 +27,7 @@ public class Reply {
 	
 	@NotEmpty(message="评论内容不能为空！")
 	@Column(length=200)
-	private String content; //评论内容
+	private String content; //评论内容111
 	
 	@Temporal(TemporalType.TIMESTAMP) 
 	private Date createDateTime;//评论时间
