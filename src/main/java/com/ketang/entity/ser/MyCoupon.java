@@ -27,14 +27,18 @@ public class MyCoupon {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
+
 	@NotEmpty(message = "名称 不能为空！")
 	@Column(length = 50)
 	private String name; // 名称
+
 	@NotNull(message = "金额不能为空！")
 	@Column(precision = 10, scale = 2)
 	private BigDecimal jine;// 金额
+
 	@Column(length = 5)
 	private Integer state;// 0未使用  1已使用
+
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createDateTime;//领取时间
 	
