@@ -45,7 +45,7 @@ public class Post_Controller {
 		if(page==null) {
 			page =1;
 		}
-		Integer limit =  100 ;//第一页显示多少个贴 子
+		Integer limit =  5 ;//第一页显示多少个贴 子
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<Post> postList = postService.list(map , page-1, limit);
 		Long total = postService.getTotal(map);

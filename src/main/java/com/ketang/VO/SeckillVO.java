@@ -7,6 +7,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.math.BigDecimal;
 import java.util.Date;
 
+
 public class SeckillVO {
 	
 	private Integer id;
@@ -41,18 +42,17 @@ public class SeckillVO {
 	
 	private  BigDecimal price;//价 格
 	
-	private String title;
+	private String title;//名称
 
-	
+	private String countDown;//倒计时
+
+
 	public SeckillVO() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public SeckillVO(Integer id, Integer venue_id, Integer num, Integer state, Date create_date_time,
-                     Date start_date_time, Date end_date_time, VenueType venueType, String imageUrl, BigDecimal price,
-                     String title) {
-		super();
+	public SeckillVO(Integer id, Integer venue_id, Integer num, Integer state, Date create_date_time, Date start_date_time, Date end_date_time, VenueType venueType, String imageUrl, BigDecimal price, String title, String countDown) {
 		this.id = id;
 		this.venue_id = venue_id;
 		this.num = num;
@@ -64,6 +64,25 @@ public class SeckillVO {
 		this.imageUrl = imageUrl;
 		this.price = price;
 		this.title = title;
+		this.countDown = countDown;
+	}
+
+	@Override
+	public String toString() {
+		return "SeckillVO{" +
+				"id=" + id +
+				", venue_id=" + venue_id +
+				", num=" + num +
+				", state=" + state +
+				", create_date_time=" + create_date_time +
+				", start_date_time=" + start_date_time +
+				", end_date_time=" + end_date_time +
+				", venueType=" + venueType +
+				", imageUrl='" + imageUrl + '\'' +
+				", price=" + price +
+				", title='" + title + '\'' +
+				", countDown='" + countDown + '\'' +
+				'}';
 	}
 
 	public Integer getId() {
@@ -154,13 +173,6 @@ public class SeckillVO {
 		this.title = title;
 	}
 
-	@Override
-	public String toString() {
-		return "SeckillVO [id=" + id + ", venue_id=" + venue_id + ", num=" + num + ", state=" + state
-				+ ", create_date_time=" + create_date_time + ", start_date_time=" + start_date_time + ", end_date_time="
-				+ end_date_time + ", venueType=" + venueType + ", imageUrl=" + imageUrl + ", price=" + price
-				+ ", title=" + title + "]";
-	}
-	
+
 	
 }

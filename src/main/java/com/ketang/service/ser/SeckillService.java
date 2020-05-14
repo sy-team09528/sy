@@ -14,4 +14,6 @@ public interface SeckillService {
 	public Long getTotal(Map<String, Object> map);
 
 	public void update(Seckill seckill);
+
+	public long nowTime();
 }

@@ -1,5 +1,6 @@
 package com.ketang.controller.houtai.ser;
 
+
 import com.ketang.dao.ser.SeckillDao;
 import com.ketang.dao.ser.VenueDao;
 import com.ketang.entity.ser.Seckill;
@@ -48,11 +49,9 @@ public class HouTai_Seckill_Controller {
 	@RequestMapping("/add")
 	public ModelAndView add() throws Exception {
 		ModelAndView mav = new ModelAndView();
-		
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<VenueType> venueTypeList = venueTypeService.list(map , 0, 100);
 		mav.addObject("venueTypeList",venueTypeList);
-		
 		mav.addObject("save_url", "/admin/seckill/add");
 		mav.addObject("title", "添加课程");
 		mav.addObject("btn_text", "添加");
@@ -71,8 +70,6 @@ public class HouTai_Seckill_Controller {
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<VenueType> venueTypeList = venueTypeService.list(map , 0, 100);
 		mav.addObject("venueTypeList",venueTypeList);
-		
-		
 		Seckill seckill = seckillDao.findId(id);
 		mav.addObject("seckill", seckill);
 		mav.addObject("title", "修改秒杀");
