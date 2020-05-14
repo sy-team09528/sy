@@ -11,6 +11,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.ketang.entity.base.CustomDateTimeSerializer;
 
@@ -81,7 +83,8 @@ public class VenueType {
 	public void setSort(Integer sort) {
 		this.sort = sort;
 	}
-	@JsonSerialize(using = CustomDateTimeSerializer.class)
+	//@JsonSerialize(using = CustomDateTimeSerializer.class)
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")
 	public Date getCreateDateTime() {
 		return createDateTime;
 	}
@@ -89,7 +92,8 @@ public class VenueType {
 		this.createDateTime = createDateTime;
 	}
 	
-	@JsonSerialize(using = CustomDateTimeSerializer.class)
+	//@JsonSerialize(using = CustomDateTimeSerializer.class)
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")
 	public Date getUpdateDateTime() {
 		return updateDateTime;
 	}
