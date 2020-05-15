@@ -30,7 +30,6 @@ $(function(){
 			time : false,
 			shade : 0.8
 		});
-		
 		$.post(save_url, {venue_id:app.venue_id,num:app.num,
 			start_date_time:new Date($("#test5").val()),end_date_time:new Date($("#test6").val())
 		}, function(result) {
@@ -52,7 +51,6 @@ $(function(){
 					  class="layui-input">
 			</div>
 		</div>
-		
 		<div class="layui-form-item">
 			<label class="layui-form-label">数量</label>
 			<div class="layui-input-block">
@@ -64,7 +62,7 @@ $(function(){
 		<div class="layui-inline">
 			<label class="layui-form-label">开始时间</label>
 			<div class="layui-input-inline">
-				<input type="text" class="layui-input" id="test5"  v-model="start_date_time" th:value="${seckill?.start_date_time}" placeholder="yyyy-MM-dd HH:mm:ss">
+				<input type="text" class="layui-input" id="test5"  v-model="start_date_time" th:value="${#dates.format(seckill?.start_date_time, 'yyyy-MM-dd HH:mm:ss')}" placeholder="yyyy-MM-dd HH:mm:ss">
 			</div>
 		</div>
 		</div>
@@ -73,7 +71,7 @@ $(function(){
 			<div class="layui-inline">
 				<label class="layui-form-label">结束时间</label>
 				<div class="layui-input-inline">
-					<input type="text" class="layui-input" id="test6"   v-model="end_date_time" th:value="${seckill?.end_date_time}" placeholder="yyyy-MM-dd HH:mm:ss">
+					<input type="text" class="layui-input" id="test6"   v-model="end_date_time" th:value="${#dates.format(seckill?.end_date_time, 'yyyy-MM-dd HH:mm:ss')}" placeholder="yyyy-MM-dd HH:mm:ss">
 				</div>
 			</div>
 		</div>

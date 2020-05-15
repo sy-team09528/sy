@@ -6,11 +6,13 @@ import com.ketang.dao.ser.SeckillDao;
 import com.ketang.dao.ser.VenueDao;
 import com.ketang.entity.ser.Seckill;
 import com.ketang.entity.ser.Venue;
+import com.ketang.util.RedisKeyEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 
@@ -32,6 +34,8 @@ public class SeckillServiceImpl implements SeckillService {
 	private VenueService venueService;
 	@Autowired
     SeckillDao seckillDao;
+	@Autowired
+	private RedisTemplate redisTemplate;
 	
 	Jedis jedis = new Jedis("localhost");
 
@@ -131,14 +135,17 @@ public class SeckillServiceImpl implements SeckillService {
 
 	//辅助更新
 	public Seckill repalce(Seckill curr, Seckill origin){
-	
+		System.err.println(curr);
 		if(curr.getVenue_id() ==null){
+
 			curr.setVenue_id(origin.getVenue_id());
+		}else {
+			redisTemplate.boundHashOps(RedisKeyEnum.seckillList.getKey()).delete(origin.getVenue_id());
 		}
 		if(curr.getNum() ==null){
 
 			curr.setNum(origin.getNum());
-			jedis.set(curr.getId().toString(), curr.getNum().toString());
+//			jedis.set(curr.getId().toString(), curr.getNum().toString());
 		}
 		if(curr.getStart_date_time() ==null){
 			curr.setStart_date_time(origin.getStart_date_time());
@@ -150,6 +157,9 @@ public class SeckillServiceImpl implements SeckillService {
 			curr.setState(origin.getState());
 		}
 		curr.setCreate_date_time(origin.getCreate_date_time());
+
+		redisTemplate.boundHashOps(RedisKeyEnum.seckillList.getKey()).put(curr.getVenue_id(),curr.getNum());
+
 		return curr;
 }
 }

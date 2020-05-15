@@ -95,7 +95,31 @@ function pay(){
 	if(memberId==""){
 		layer.msg("请先登录");
 	}else{
-		location.replace("/order/create?id=[[${venue.id}]]");
+		$.post('/seckill/startOrno/'+[[${venue.id}]],function (result) {
+			if(!result.success){
+				$.post('/seckill/seckillRun/'+[[${venue.id}]]+'/'+1,function (result) {
+					layer.closeAll();
+					console.log(1)
+					if(result.success){
+						console.log(2)
+						layer.alert('订单创建成功', {
+							skin: 'layui-layer-lan' //样式类名
+							,closeBtn: 0
+						}, function(){
+							layer.closeAll();
+							$("#pay_btn").attr("onclick","void();");
+							$("#pay_btn").text("订单创建成功");
+							window.location.href = "/order/"+result.orderId;
+						});
+					}else{
+						layer.msg(result.msg);
+					}
+				}, 'json');
+			}else {
+				location.replace("/order/create?id=[[${venue.id}]]");
+			}
+		}, 'json');
+
 	}
 }
 
