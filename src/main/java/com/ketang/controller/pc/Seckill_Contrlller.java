@@ -12,6 +12,7 @@ import com.ketang.entity.ser.Seckill;
 import com.ketang.entity.ser.Venue;
 import com.ketang.service.ser.RedisService;
 import com.ketang.service.ser.SeckillService;
+import com.ketang.util.RedisKeyEnum;
 import net.sf.json.JSONObject;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -55,8 +56,6 @@ public class Seckill_Contrlller {
     @Autowired
     private SeckillDao seckillDao;
 
-    //设置秒杀redis缓存的key
-    private final String key = "order";
 
 
     @RequestMapping("/index")
@@ -73,21 +72,21 @@ public class Seckill_Contrlller {
     }
     @ResponseBody
     @RequestMapping("/seckillRun/{id}/{md5}")
-    public JSONObject seckillRun(@PathVariable("id")Integer id,
+    public JSONObject seckillRun(@PathVariable("id")Integer id,//课程id
                                  @PathVariable("md5") String md5,
                                  HttpServletResponse res, HttpServletRequest req, HttpSession session) throws Exception {
         String messge=null;
 
         Member member =(Member) session.getAttribute("member");
 //        System.out.println("参加秒杀的用户是："+member.getId()+"，秒杀的商品是："+id);
-        Order order = (Order) redisTemplate.boundHashOps(key).get(member.getId()+"-"+id);
+        Order order = (Order) redisTemplate.boundHashOps(RedisKeyEnum.order.getKey()).get(member.getId()+"-"+id);
         if (order == null) {
             //说明redis缓存中没有此key对应的value
             //查询数据库，并将数据放入缓存中
             order = orderDao.findByMemberIdAndVenueId(member.getId(),id);
             if (order != null) {
                 //查询到了，存入redis缓存中。 key:秒杀表的ID值； value:秒杀表数据
-                redisTemplate.boundHashOps(key).put(member.getId()+"-"+id, order);
+                redisTemplate.boundHashOps(RedisKeyEnum.order.getKey()).put(member.getId()+"-"+id, order);
                 messge="该商品已存在于订单中";
             }
         }else {

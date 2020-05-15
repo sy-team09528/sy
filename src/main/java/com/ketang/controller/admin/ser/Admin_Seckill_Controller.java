@@ -8,12 +8,10 @@ import com.ketang.entity.ser.Venue;
 import com.ketang.entity.ser.VenueType;
 import com.ketang.service.ser.SeckillService;
 import com.ketang.service.ser.VenueService;
-import com.ketang.util.Base64Util;
-import com.ketang.util.DateUtil;
-import com.ketang.util.FileUtil;
-import com.ketang.util.StringUtil;
+import com.ketang.util.*;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,7 +45,9 @@ public class Admin_Seckill_Controller {
 	private VenueService venueService ;
 	@Resource
 	private SeckillService seckillService ;
-	Jedis jedis = new Jedis("localhost");
+	@Autowired
+	private RedisTemplate redisTemplate;
+
 	
 	/**
 	 * /admin/venue/add
@@ -57,7 +57,6 @@ public class Admin_Seckill_Controller {
 	public JSONObject add(@Valid Seckill seckill ,BindingResult bindingResult
 			, HttpServletResponse response, HttpServletRequest request,HttpSession session) throws Exception {
 		JSONObject result = new JSONObject();
-		System.out.println(seckill);
 		if(bindingResult.hasErrors()){
 			result.put("success", false);
 			result.put("msg", bindingResult.getFieldError().getDefaultMessage());
@@ -67,8 +66,9 @@ public class Admin_Seckill_Controller {
 
 			seckill.setState(0);
 			seckill=seckillDao.save(seckill);
-			jedis.set(seckill.getId().toString(), seckill.getNum().toString());
-	        jedis.close();
+			redisTemplate.boundHashOps(RedisKeyEnum.seckillList.getKey()).put(seckill.getVenue_id(), seckill.getNum());
+//			jedis.set(seckill.getId().toString(), seckill.getNum().toString());
+//	        jedis.close();
 			result.put("success", true);
 			result.put("msg", "添加成功");
 			result.put("btn_disable", true);
@@ -82,10 +82,9 @@ public class Admin_Seckill_Controller {
 	@ResponseBody
 	@RequestMapping("/update")
 	public JSONObject update(@Valid Seckill seckill, HttpServletResponse response, HttpServletRequest request)throws Exception {
-		System.out.println(seckill);
 		JSONObject result = new JSONObject();
 		//String webPath=request.getServletContext().getRealPath("");
-		System.out.println(seckill);
+
 		seckillService.update(seckill);
 		result.put("success", true);
 		result.put("msg", "修改成功");
@@ -146,133 +145,13 @@ public class Admin_Seckill_Controller {
 		//String webPath=request.getServletContext().getRealPath("");
 		JSONObject result = new JSONObject();
 		for (int i = 0; i < idsStr.length; i++) {
+			Seckill seckill = seckillDao.findId(Integer.parseInt(idsStr[i]));
+			redisTemplate.boundHashOps(RedisKeyEnum.seckillList.getKey()).delete(seckill.getVenue_id());
 			seckillDao.deleteById(Integer.parseInt(idsStr[i]));
-			jedis.del(idsStr[i].toString());
+//			jedis.del(idsStr[i].toString());
+
 		}
 		result.put("success", true);
 		return result;
 	}
-	
-	
-	
-	
-	
-	/**
-	 * 
-	 * /admin/venue/add_imageUrl
-	 */
-	@ResponseBody
-	@RequestMapping("/add_imageUrl")
-	public JSONObject add_imageUrl(@RequestParam("file") MultipartFile file, HttpServletResponse response, HttpServletRequest request) throws Exception {
-	        JSONObject result = new JSONObject();
-	        if(!file.isEmpty()){
-	            String webPath=request.getServletContext().getRealPath("");
-	            System.out.println(webPath);
-	            String filePath= "/static/upload_image/venue_cover/"+ DateUtil.formatDate(new Date(), "yyyyMMdd")+"/";
-	            //把文件名子换成（时间搓.png）
-	            // String imageName="houtai_logo."+file.getOriginalFilename().split("\\.")[1];
-	            //检测   文件夹有没有创建 
-	            FileUtil.makeDirs(webPath+filePath);
-	            String imageName= DateUtil.formatDate(new Date(), "yyyyMMddHHmmss")+".jpg";
-	            file.transferTo(new File(webPath+filePath+imageName));
-	            result.put("success", true);
-	            result.put("path", filePath+imageName);
-	        }
-	        
-	        return result;
-	}
-	
-	
-	/**
-	 * 
-	 * /admin/venue/add_imageUrl2
-	 */
-	@ResponseBody
-	@RequestMapping("/add_imageUrl2")
-	public JSONObject add_imageUrl2(@RequestParam("file2") MultipartFile file, HttpServletResponse response, HttpServletRequest request) throws Exception {
-	        JSONObject result = new JSONObject();
-	        if(!file.isEmpty()){
-	            String webPath=request.getServletContext().getRealPath("");
-	            System.out.println(webPath);
-	            String filePath= "/static/upload_image/venue_cover/"+ DateUtil.formatDate(new Date(), "yyyyMMdd")+"/";
-	            //把文件名子换成（时间搓.png）
-	            // String imageName="houtai_logo."+file.getOriginalFilename().split("\\.")[1];
-	            //检测   文件夹有没有创建 
-	            FileUtil.makeDirs(webPath+filePath);
-	            String imageName= DateUtil.formatDate(new Date(), "yyyyMMddHHmmss")+".jpg";
-	            file.transferTo(new File(webPath+filePath+imageName));
-	            result.put("success", true);
-	            result.put("path", filePath+imageName);
-	        }
-	        
-	        return result;
-	}
-	
-	
-	/**
-	 * 
-	 * /admin/venue/add_cropper_image
-	 * imgData=  data:image/png;base64,iVBORw0KGgoAAAiVBORw0KGgoAAAiVBORw0KGgoAAA后面非常多的字符，就是imgData
-	 */
-	@ResponseBody
-	@RequestMapping("/add_cropper_image")
-	public JSONObject add_cropper_image(@RequestParam(value="imgData",required=false)String imgData, HttpServletResponse response, HttpServletRequest request) throws Exception {
-	        JSONObject result = new JSONObject();
-	        
-	        //取得根目录带d://dxxxxx/tomcat/ruzhou/
-			String webPath=request.getServletContext().getRealPath("");
-			//定义根目录下面的文件夹
-			String  uploadFile = "/static/upload_image/venue_cover/"+ DateUtil.formatDate(new Date(), "yyyyMMdd")+"/";
-			String fileName = DateUtil.formatDate(new Date(), "yyyyMMddHHmmss")+".jpg";
-			
-			//调用产生文件夹的方法
-			FileUtil.makeDirs(webPath+uploadFile);
-			
-			imgData = imgData.replace("data:image/png;base64,", "");
-			
-			Base64Util.GenerateImage(imgData, webPath+uploadFile+fileName);
-			result.put("success", true);
-	        result.put("path", uploadFile+fileName);
-	        return result;
-	}
-	
-	/**
-	 * /admin/venue/findById
-	 * #通过Id查找实体
-	 * @param id
-	 */
-	@ResponseBody	
-	@RequestMapping("/findById")
-	public Venue findById(@RequestParam(value="id")Integer id, HttpServletResponse response)throws Exception{
-		Venue venue = venueDao.findId(id);
-		return venue;
-	}
-	
-	/**
-	 * /admin/venue/add_file
-	 */
-	@ResponseBody
-	@RequestMapping("/add_file")
-	public JSONObject add_file(@RequestParam("file2") MultipartFile file,HttpServletResponse response, HttpServletRequest request) throws Exception {
-	        JSONObject result = new JSONObject();
-	        if(!file.isEmpty()){
-	            String webPath=request.getServletContext().getRealPath("");
-	            System.out.println(webPath);
-	            String filePath= "/static/upload_file/venue_file/"+ DateUtil.formatDate(new Date(), "yyyyMMdd")+"/";
-	            //把文件名子换成（时间搓.png）
-	            // String imageName="houtai_logo."+file.getOriginalFilename().split("\\.")[1];
-	            System.out.println(file.getOriginalFilename().split("\\.")[0]);
-	            System.out.println(file.getOriginalFilename().split("\\.")[1]);
-	            //检测   文件夹有没有创建 
-	            FileUtil.makeDirs(webPath+filePath);
-	            String imageName= DateUtil.formatDate(new Date(), "yyyyMMddHHmmss")+file.getOriginalFilename().split("\\.")[0]+"."+file.getOriginalFilename().split("\\.")[1];
-	            file.transferTo(new File(webPath+filePath+imageName));
-	            result.put("success", true);
-	            result.put("path", filePath+imageName);
-	        }
-	        return result;
-	}
-	
-	
-	
 }
