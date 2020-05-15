@@ -25,23 +25,22 @@ public class Reply {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
-	@NotEmpty(message="回复内容不能为空！")
+	@NotEmpty(message="评论内容不能为空！")
 	@Column(length=200)
-	private String content; //回复内容
+	private String content; //评论内容
 	
 	@Temporal(TemporalType.TIMESTAMP) 
-	private Date createDateTime;//回复时间
+	private Date createDateTime;//评论时间
 
 	@OneToOne
 	@JoinColumn(name="venueId")
-	private Venue venue    ; //展馆
+	private Venue venue    ; //课程
 	
 	@OneToOne
 	@JoinColumn(name="memberId")
-	private Member member  ; //回复人
+	private Member member  ; //评论人
 	
-	
-	
+
 	public Venue getVenue() {
 		return venue;
 	}

@@ -23,21 +23,23 @@ public class Coupon {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
+
 	@NotEmpty(message = "名称 不能为空！")
 	@Column(length = 50)
 	private String name; // 名称
+
 	@NotNull(message = "排序号不能为空！")
 	@Column(length = 10)
 	private Integer sort;
+
 	@NotNull(message = "金额不能为空！")
 	@Column(precision = 10, scale = 2)
 	private BigDecimal jine;// 金额
+
 	@NotNull(message = "数量不能为空！")
 	@Column(length = 10)
 	private Integer num;
-	
-	
-	
+
 	
 	public Integer getNum() {
 		return num;
