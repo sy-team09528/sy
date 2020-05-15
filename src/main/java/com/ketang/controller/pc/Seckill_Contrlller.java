@@ -130,4 +130,27 @@ public class Seckill_Contrlller {
         result.put("data",now.getTime());
         return result;
     }
+
+    @ResponseBody
+    @RequestMapping(value = "/startOrno/{id}")
+    public JSONObject startOrno(@PathVariable("id")Integer id//课程id
+                                ) {
+        Seckill sekill = seckillDao.findByVenue_id(id);
+        JSONObject result = new JSONObject();
+        if (sekill==null){
+            result.put("success",true);
+        }else {
+            if(sekill.getState()==0){
+                result.put("success",true);
+            }else{
+                long nowTime = seckillService.nowTime();
+                if (nowTime>=sekill.getStart_date_time().getTime()&&nowTime<=sekill.getEnd_date_time().getTime()){
+                    result.put("success",false);
+                }else {
+                    result.put("success", true);
+                }
+            }
+        }
+        return  result;
+    }
 }
