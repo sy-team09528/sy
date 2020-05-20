@@ -47,7 +47,9 @@ public class MemberServiceImpl implements MemberService {
 		if(curr.getPhone() ==null){
 			curr.setPhone(origin.getPhone());
 		}
-		
+        if(curr.getIntegral()==null){
+            curr.setIntegral(origin.getIntegral());
+        }
 		
 		if(curr.getSex() ==null){
 			curr.setSex(origin.getSex());

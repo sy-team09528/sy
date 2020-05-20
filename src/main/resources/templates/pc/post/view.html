@@ -115,7 +115,7 @@ body {
 					
 					<div th:each="postItem : ${postItemList}" style="border-bottom: 1px dotted #DFDFDF; padding: 20px 0 10px;">
 						<div style="display: flex;display: -webkit-flex;   ">
-							<img style="width: 50px;" alt="" th:src="${postItem.member.imageUrl}">
+							<img style="width: 50px;height: 50px;" alt="" th:src="${postItem.member.imageUrl}">
 							<div style="overflow: hidden; flex:1;-webkit-flex:1; padding:0px 0px 0px 15px;">
 								<div style="line-height:25px; color: #01AAED;" th:text="${postItem.member.nickName}">xxx</div> 
 								<div style="line-height:25px; color: #808080;" th:text="|${#dates.format(postItem.createDateTime, 'yyyy-MM-dd HH:mm:ss')}|">2020-8-55 5</div> 
