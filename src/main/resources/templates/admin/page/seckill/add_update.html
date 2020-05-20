@@ -24,7 +24,6 @@ $(function(){
 });
 	var save_url = [[${save_url}]];
 	function save() {
-		console.log($("#test5").val());
 		var index = layer.msg('提交中，请稍候', {
 			icon : 16,
 			time : false,
@@ -71,10 +70,19 @@ $(function(){
 			<div class="layui-inline">
 				<label class="layui-form-label">结束时间</label>
 				<div class="layui-input-inline">
-					<input type="text" class="layui-input" id="test6"   v-model="end_date_time" th:value="${#dates.format(seckill?.end_date_time, 'yyyy-MM-dd HH:mm:ss')}" placeholder="yyyy-MM-dd HH:mm:ss">
+					<input type="text" class="layui-input" id="test6"  v-model="end_date_time" th:value="${#dates.format(seckill?.end_date_time, 'yyyy-MM-dd HH:mm:ss')}" placeholder="yyyy-MM-dd HH:mm:ss">
 				</div>
 			</div>
 		</div>
+
+<!--		<div class="layui-form-item">-->
+<!--			<div class="layui-inline">-->
+<!--				<label class="layui-form-label">结束时间</label>-->
+<!--				<div class="layui-input-inline">-->
+<!--					<input type="text" class="layui-input" id="test6"   v-model="end_date_time" th:value="${#dates.format(seckill?.end_date_time, 'yyyy-MM-dd HH:mm:ss')}" placeholder="yyyy-MM-dd HH:mm:ss">-->
+<!--				</div>-->
+<!--			</div>-->
+<!--		</div>-->
 		
 		
 		<div class="layui-form-item">
